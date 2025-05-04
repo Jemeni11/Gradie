@@ -1,102 +1,101 @@
-# ReactViteTS (Vite + React + TypeScript + TailwindCSS + Prettier + ESLint)
+<a id="readme-top"></a>
+
+<br />
+<div align="center">
+  <a href="https://github.com/Jemeni11/Gradie"><img src="public/android-chrome-192x192.png" alt="Logo" width="128" height="128"></a>
+
+<h3 align="center">Gradie</h3>
+
+  <p align="center">
+    Turn any image into a vibe.
+    <br />
+    <a href="https://github.com/Jemeni11/Gradie"><strong>Explore the repo »</strong></a>
+    <br />
+  </p>
+</div>
+
+Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Why did I build this?](#why-did-i-build-this)
+- [Contributing](#contributing)
+- [Wait a minute, who are you?](#wait-a-minute-who-are-you)
+- [License](#license)
+- [Changelog](#changelog)
 
 ## Introduction
 
-Hey!
-This is a Vite template with the following installed:
+Gradie is a design tool that extracts the most prominent colors from an image and turns them into a smooth, beautiful gradient.
 
-- [Vite 6.1.0](https://vite.dev/)
-- [React 19.0.0](https://react.dev/)
-- [Typescript 5.7.2](https://www.typescriptlang.org/)
-- [TailwindCSS 4.0.6](https://tailwindcss.com/)
-- [Prettier 3.5.1](https://prettier.io/)
-- [prettier-plugin-tailwind 0.6.11](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
-- [ESLint 9.19.0](https://eslint.org/)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Installation
+## Features
 
-You can either:
+These features can change at any time. Their existence depends on me having enough time or motivation to implement them all tbh.
 
-- Clone the repo and run `pnpm install` in the root directory
+- 🎨 Extracts dominant colors from an image
+- 🌈 Creates a smooth gradient using the extracted palette
+- 🔧 Offers multiple gradient strategies:
+  - Dominant + first color
+  - Dominant + random
+  - Dominant + most contrasting
+  - Dominant + warmest-to-coolest shift
+- 📁 Works with uploaded files or pasted images
+- 📋 Copy CSS or image of the gradient
+- ⚙️ Export options
 
-  Bash:
-  
-  ```bash
-  git clone https://github.com/Jemeni11/ReactViteTS.git && cd ReactViteTS && pnpm install
-  ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-  Powershell:
-  
-  ```powershell
-  git clone https://github.com/Jemeni11/ReactViteTS.git; cd ReactViteTS; pnpm install
-  ```
+## How It Works
 
-  <br/>
-  <br/>
+1. You upload or paste an image.
+2. Gradie extracts the most dominant colors.
+3. You choose a gradient mode (like "Dominant + most contrast").
+4. Gradie generates a smooth linear gradient using your selection.
+5. You export it as CSS or download the image.
 
-- Or click on the `use this template` button and pick whatever option you prefer
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-  <br/>
-  <br/>
+## Why did I build this?
 
-  <img width="945" alt="Screenshot of this repo's github page" src="https://github.com/user-attachments/assets/bc779b76-8c38-451f-91f3-6712ebff2860">
+I saw a nice-looking image, thought the colours in it would look nice as a gradient background, and here we are!
+
+(The image is the cover art for [mike's](https://genius.com/artists/Mike-mike-stud) [the lows.](https://genius.com/albums/Mike-mike-stud/The-lows) album, if you're wondering 🫡)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Contributing
+
+Contributions are welcome! If you'd like to improve Gradie, please feel free to submit a pull request.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Wait a minute, who are you?
 
-Hello there! I'm Emmanuel Jemeni, and I work as a Frontend Developer. You can find me on various platforms:
+Hello there! I'm Emmanuel Jemeni, and I am a Frontend Developer.
+
+You can find me on various platforms:
 
 - [LinkedIn](https://www.linkedin.com/in/emmanuel-jemeni)
 - [GitHub](https://github.com/Jemeni11)
 - [Twitter/X](https://twitter.com/Jemeni11_)
 - [Bluesky](https://bsky.app/profile/jemeni11.bsky.social)
 
-## Vite-Specific Information
+If you'd like, you can support me on [GitHub Sponsors](https://github.com/sponsors/Jemeni11/)
+or [Buy Me A Coffee](https://www.buymeacoffee.com/jemeni11).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-Currently, two official plugins are available:
+## License
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[MIT License](LICENSE)
 
-### Expanding the ESLint configuration
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Changelog
 
-- Configure the top-level `parserOptions` property like this:
+[Changelog](/CHANGELOG.md)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
