@@ -36,67 +36,6 @@
   --sidebar-accent-foreground: oklch(20.5% 0 0deg);
   --sidebar-border: oklch(92.2% 0 0deg);
   --sidebar-ring: oklch(70.8% 0 0deg);
-
-  font-family: system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
-  text-rendering: optimizeLegibility;
-
-  font-synthesis: none;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-input,
-button,
-textarea,
-select {
-  font: inherit;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  overflow-wrap: break-word;
-}
-
-p {
-  text-wrap: pretty;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  text-wrap: balance;
-}
-
-#root {
-  isolation: isolate;
 }
 
 @theme inline {
@@ -172,6 +111,18 @@ h6 {
 }
 
 @layer base {
+  :root {
+    font-family: system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+
+    font-synthesis: none;
+  }
+
   * {
     border-color: var(--border);
     outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
@@ -180,5 +131,56 @@ h6 {
   body {
     color: var(--foreground);
     background-color: var(--background);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+
+  #root {
+    isolation: isolate;
   }
 }
