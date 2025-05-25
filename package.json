@@ -1,5 +1,5 @@
 {
-  "name": "reactvitets",
+  "name": "gradie",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -47,6 +47,7 @@
     "eslint-plugin-react-hooks": "6.0.0-rc1",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "stylelint": "^16.19.1",
