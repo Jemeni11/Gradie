@@ -42,7 +42,7 @@ export default function Header() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-4 w-fit">
             <DropdownMenuLabel className="font-aladin text-2xl">
-              Colour Format
+              Color Format
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup
