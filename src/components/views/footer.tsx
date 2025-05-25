@@ -12,18 +12,18 @@ import {
 export default function Footer() {
   return (
     <footer className="my-12 flex items-center justify-between py-7">
-      <div className="flex flex-col">
-        <span className="mb-0.5 text-xl 2xl:mb-1 2xl:text-3xl">
-          Emmanuel C. Jemeni
+      <div>
+        <span className="text-sm font-light 2xl:text-2xl">
+          Designed and Developed by{" "}
+          <a
+            href="https://github.com/Jemeni11/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xl font-medium 2xl:mb-1 2xl:text-3xl"
+          >
+            Emmanuel C. Jemeni
+          </a>
         </span>
-        <a
-          href="http://"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm font-light 2xl:text-2xl"
-        >
-          @Jemeni11
-        </a>
       </div>
       <div className="flex items-center gap-x-4">
         <a
