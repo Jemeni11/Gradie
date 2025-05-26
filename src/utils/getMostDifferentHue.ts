@@ -9,6 +9,7 @@ export default function getMostDifferentHue(
   const baseColor = new Color(base).to("oklch");
   let maxDeltaH = -1;
   let resultColor = palette[0];
+  const colorSpace = format === "hex" || format === "rgb" ? "srgb" : format;
 
   for (const colorStr of palette) {
     const current = new Color(colorStr).to("oklch");
@@ -21,5 +22,5 @@ export default function getMostDifferentHue(
     }
   }
 
-  return new Color(resultColor).to(format).toString({ format });
+  return new Color(resultColor).to(colorSpace).toString({ format });
 }

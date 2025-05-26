@@ -9,6 +9,7 @@ export default function getMostContrastingColor(
   const baseColor = new Color(base);
   let maxContrast = 0;
   let resultColor = palette[0];
+  const colorSpace = format === "hex" || format === "rgb" ? "srgb" : format;
 
   for (const colorStr of palette) {
     const contrast = Math.abs(baseColor.contrast(colorStr, "APCA"));
@@ -19,7 +20,7 @@ export default function getMostContrastingColor(
   }
 
   const mostConstratingColor = new Color(resultColor)
-    .to(format)
+    .to(colorSpace)
     .toString({ format });
 
   return mostConstratingColor;
