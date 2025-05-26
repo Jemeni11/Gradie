@@ -9,7 +9,19 @@ import React, {
 import { toast } from "sonner";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import useColorThief from "use-color-thief";
-import { imageAtom, paletteAtom, convertedPaletteAtom } from "@/store";
+import {
+  imageAtom,
+  paletteAtom,
+  convertedPaletteAtom,
+  customPickStartAtom,
+  customPickEndAtom,
+  customPickStopAtom,
+  gradieModeAtom,
+  gradientAngleAtom,
+  gradientPositionAtom,
+  gradientTypeAtom,
+  radialShapeAtom,
+} from "@/store";
 import { cn } from "@/lib/utils";
 import { generateUUID, copyToClipboard } from "@/utils";
 import { ValidatedFile } from "@/types";
@@ -287,6 +299,14 @@ export default function ImageUploadInput({
     quality: 5,
   });
 
+  const setCustomPickStart = useSetAtom(customPickStartAtom);
+  const setCustomPickEnd = useSetAtom(customPickEndAtom);
+  const setCustomPickStop = useSetAtom(customPickStopAtom);
+  const setGradieMode = useSetAtom(gradieModeAtom);
+  const setGradientAngle = useSetAtom(gradientAngleAtom);
+  const setGradientPosition = useSetAtom(gradientPositionAtom);
+  const setGradientType = useSetAtom(gradientTypeAtom);
+  const setRadialShape = useSetAtom(radialShapeAtom);
   const setPalette = useSetAtom(paletteAtom);
 
   useEffect(() => {
@@ -307,10 +327,29 @@ export default function ImageUploadInput({
   const handleDeleteClick = useCallback(() => {
     setImages([]);
     setPalette([]);
+    setCustomPickStart("");
+    setCustomPickEnd("");
+    setCustomPickStop(50);
+    setGradieMode("Default");
+    setGradientAngle(90);
+    setGradientPosition("center");
+    setGradientType("linear");
+    setRadialShape("circle");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, [setImages, setPalette]);
+  }, [
+    setCustomPickEnd,
+    setCustomPickStart,
+    setCustomPickStop,
+    setGradieMode,
+    setGradientAngle,
+    setGradientPosition,
+    setGradientType,
+    setImages,
+    setPalette,
+    setRadialShape,
+  ]);
 
   return (
     <div className={cn("grid", className)} {...rest}>
