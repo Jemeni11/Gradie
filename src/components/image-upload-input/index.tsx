@@ -50,14 +50,6 @@ export default function ImageUploadInput({
     return [a, b];
   }, [images]);
 
-  // Handle file deletion - removes all files (including valid ones)
-  const handleDeleteClick = useCallback(() => {
-    setImages([]);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, [setImages]);
-
   // Auto-remove error files after timeout
   useEffect(() => {
     const interval = setInterval(() => {
@@ -292,7 +284,7 @@ export default function ImageUploadInput({
   const { palette } = useColorThief(imgSrc ?? "", {
     format: "hex",
     colorCount: 5,
-    quality: 10,
+    quality: 5,
   });
 
   const setPalette = useSetAtom(paletteAtom);
@@ -310,6 +302,15 @@ export default function ImageUploadInput({
     convertedPalette && convertedPalette.length > 0
       ? convertedPalette
       : palette;
+
+  // Handle file deletion - removes all files (including valid ones)
+  const handleDeleteClick = useCallback(() => {
+    setImages([]);
+    setPalette([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [setImages, setPalette]);
 
   return (
     <div className={cn("grid", className)} {...rest}>
