@@ -47,7 +47,7 @@ export default function GradientArea({
 
   const getGradientDirection = () => {
     if (gradientType === "linear") {
-      return `${angle}deg `;
+      return `${angle}deg, `;
     } else if (gradientType === "radial") {
       return `${radialShape} at ${position}, `;
     } else if (gradientType === "conic") {
@@ -89,8 +89,6 @@ export default function GradientArea({
       }
       break;
   }
-
-  console.log(gradientString);
 
   const copyGradientCSS = () => {
     copyToClipboard(gradientString, "CSS copied to clipboard!");
