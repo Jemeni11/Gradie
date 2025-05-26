@@ -42,11 +42,12 @@ export default function GradientArea({
     return <div>No palette available</div>;
   }
 
+  const paletteWithoutDominant = palette.slice(1);
   const interpolation = colorInterpolationMethodMapper[colorFormat];
 
   const getGradientDirection = () => {
     if (gradientType === "linear") {
-      return `${angle}deg, `;
+      return `${angle}deg `;
     } else if (gradientType === "radial") {
       return `${radialShape} at ${position}, `;
     } else if (gradientType === "conic") {
@@ -69,11 +70,11 @@ export default function GradientArea({
       break;
 
     case "Bold Pop":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getMostContrastingColor(palette).color})`;
+      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getMostContrastingColor(paletteWithoutDominant, dominant, colorFormat)})`;
       break;
 
     case "Soft Sweep":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getMostDifferentHue(palette).color})`;
+      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getMostDifferentHue(paletteWithoutDominant, dominant, colorFormat)})`;
       break;
 
     case "Full Blend":
