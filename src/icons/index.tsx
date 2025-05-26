@@ -163,6 +163,100 @@ export const GitHubSponsorsIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+export const LoaderIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    width="120"
+    height="120"
+    viewBox="0 0 408 408"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="animate-float"
+    {...props}
+  >
+    <rect
+      y="204"
+      width="288.5"
+      height="288.5"
+      rx="13.5"
+      transform="rotate(-45 0 204)"
+      fill="url(#paint0_linear_183_34)"
+    />
+    <rect
+      x="6.95117"
+      y="151.201"
+      width="288.5"
+      height="288.5"
+      rx="13.5"
+      transform="rotate(-30 6.95117 151.201)"
+      fill="url(#paint1_linear_183_34)"
+    />
+    <rect
+      x="27.3306"
+      y="102"
+      width="288.5"
+      height="288.5"
+      rx="13.5"
+      transform="rotate(-15 27.3306 102)"
+      fill="url(#paint2_linear_183_34)"
+    />
+    <rect
+      x="59.75"
+      y="59.75"
+      width="288.5"
+      height="288.5"
+      rx="13.5"
+      fill="url(#paint3_linear_183_34)"
+    />
+
+    <defs>
+      <linearGradient
+        id="paint0_linear_183_34"
+        x1="144.25"
+        y1="204"
+        x2="144.25"
+        y2="492.499"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#EEEDEA" />
+        <stop offset="1" stopColor="#EE6495" />
+      </linearGradient>
+      <linearGradient
+        id="paint1_linear_183_34"
+        x1="151.201"
+        y1="151.201"
+        x2="151.201"
+        y2="439.7"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#EEEDEA" />
+        <stop offset="1" stopColor="#EE6495" />
+      </linearGradient>
+      <linearGradient
+        id="paint2_linear_183_34"
+        x1="171.58"
+        y1="102"
+        x2="171.58"
+        y2="390.5"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#EEEDEA" />
+        <stop offset="1" stopColor="#EE6495" />
+      </linearGradient>
+      <linearGradient
+        id="paint3_linear_183_34"
+        x1="204"
+        y1="59.75"
+        x2="204"
+        y2="348.25"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#EEEDEA" />
+        <stop offset="1" stopColor="#EE6495" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
 // Footer Icon (Hover and it gets filled)
 
 export const GitHubIcon = (props: SVGProps<SVGSVGElement>) => (
