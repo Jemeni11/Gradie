@@ -5,7 +5,7 @@ import {
   copyToClipboard,
 } from "@/utils";
 import { colorInterpolationMethodMapper } from "@/constants";
-import type { ColorFormat, GradieMode, GradientType } from "@/types";
+import type { GradieMode, GradientType } from "@/types";
 import { useAtomValue } from "jotai";
 import {
   customPickStartAtom,
@@ -14,20 +14,17 @@ import {
   gradientAngleAtom,
   gradientPositionAtom,
   radialShapeAtom,
+  dominantConvertedColorAtom,
+  convertedPaletteAtom,
+  colorFormatAtom,
 } from "@/store";
 
 export default function GradientArea({
-  dominant,
-  palette,
   gradieMode,
   gradientType,
-  colorFormat,
 }: {
-  dominant: string;
-  palette: string[];
   gradieMode: GradieMode;
   gradientType: GradientType;
-  colorFormat: ColorFormat;
 }) {
   const start = useAtomValue(customPickStartAtom);
   const end = useAtomValue(customPickEndAtom);
@@ -37,6 +34,10 @@ export default function GradientArea({
   const position = useAtomValue(gradientPositionAtom);
 
   const radialShape = useAtomValue(radialShapeAtom);
+
+  const dominant = useAtomValue(dominantConvertedColorAtom);
+  const palette = useAtomValue(convertedPaletteAtom);
+  const colorFormat = useAtomValue(colorFormatAtom);
 
   if (!palette || !dominant) {
     return <div>No palette available</div>;
