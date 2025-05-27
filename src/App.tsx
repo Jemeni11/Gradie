@@ -18,6 +18,18 @@ export default function App() {
           <PalettePanel />
           <GradientPanel />
         </div>
+        <div className="mt-8">
+          TODO
+          <ul>
+            <li>Download button</li>
+            <li>Fix loader</li>
+            <li>add wiki/faq</li>
+            <li>analytics</li>
+            <li>mobile responsiveness</li>
+            <li>???</li>
+            <li>profit (lol)</li>
+          </ul>
+        </div>
         <Footer />
       </div>
     </>
