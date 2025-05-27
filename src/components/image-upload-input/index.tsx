@@ -8,7 +8,8 @@ import React, {
 } from "react";
 import { toast } from "sonner";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import useColorThief from "use-color-thief";
+import { RESET } from "jotai/utils";
+import useColorThief from "@/hooks/useColorThief";
 import {
   imageAtom,
   paletteAtom,
@@ -21,12 +22,15 @@ import {
   gradientPositionAtom,
   gradientTypeAtom,
   radialShapeAtom,
+  loadingStateAtom,
 } from "@/store";
 import { cn } from "@/lib/utils";
-import { generateUUID, copyToClipboard } from "@/utils";
+import { generateUUID } from "@/utils";
 import { ValidatedFile } from "@/types";
-import { ImageIcon, DocumentIcon, DeleteIcon, InfoIcon } from "@/icons";
+import { ImageIcon, InfoIcon } from "@/icons";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import PaletteContainer from "./palette-container";
+import ImageInfo from "./image-info";
 
 /**
  * The ImageUploadInput component provides a user interface for image uploads.
@@ -53,36 +57,27 @@ export default function ImageUploadInput({
   const pasteDebounceTimeMs = 300; // Debounce time in milliseconds
 
   // Separate files with and without errors
-  const [filesWithError, filesWithoutError] = useMemo(() => {
-    const a: ValidatedFile[] = [],
-      b: ValidatedFile[] = [];
+  const { filesWithError, validFile } = useMemo(() => {
+    const errors: ValidatedFile[] = [];
+    const valid = images.find((f) => f?.status?.length === 0);
 
-    images.forEach((f) => f?.status && (f.status.length ? a : b).push(f));
+    images.forEach((f) => {
+      if (f?.status?.length > 0) errors.push(f);
+    });
 
-    return [a, b];
+    return { filesWithError: errors, validFile: valid };
   }, [images]);
 
   // Auto-remove error files after timeout
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (filesWithError && filesWithError?.length > 0) {
-        setImages((prev) => {
-          const firstErrorIndex = prev.findIndex(
-            (file) => file?.status && file.status.length !== 0,
-          );
-          if (firstErrorIndex !== -1) {
-            return [
-              ...prev.slice(0, firstErrorIndex),
-              ...prev.slice(firstErrorIndex + 1),
-            ];
-          }
-          return prev;
-        });
-      }
-    }, 3000);
+    if (filesWithError?.length > 0) {
+      const timeout = setTimeout(() => {
+        setImages((prev) => prev.filter((file) => file.status.length === 0));
+      }, 3000);
 
-    return () => clearInterval(interval);
-  }, [images, filesWithError, setImages]);
+      return () => clearTimeout(timeout);
+    }
+  }, [filesWithError, setImages]);
 
   const validateFile = useCallback((file: File) => {
     if (!file) return ["Invalid file"];
@@ -90,6 +85,9 @@ export default function ImageUploadInput({
     const errors = [];
     if (!file.type.startsWith("image/")) {
       errors.push(`File ${file.name} is not an image`);
+    }
+    if (file.size === 0) {
+      errors.push(`${file.name} appears to be empty`);
     }
     return errors;
   }, []);
@@ -110,13 +108,7 @@ export default function ImageUploadInput({
         status: validateFile(singleFile[0]),
       };
 
-      // Simply replace any existing files with our new file
-      // This ensures we only ever have one valid file
-      setImages((prevFiles) => {
-        // Keep only the error files, and add our new file
-        const errorFiles = prevFiles.filter((file) => file.status.length > 0);
-        return [...errorFiles, newFile];
-      });
+      setImages([newFile]);
 
       // If the file is valid, trigger success animation
       if (newFile.status.length === 0) {
@@ -186,6 +178,8 @@ export default function ImageUploadInput({
           toast.info("Only one image allowed. Using the first one.");
         }
         addFiles([droppedFiles[0]]);
+      } else {
+        toast.warning("No valid images found in dropped files.");
       }
     },
     [addFiles],
@@ -195,47 +189,38 @@ export default function ImageUploadInput({
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       const now = Date.now();
+
       // Debounce paste events
       if (now - lastPasteTimeRef.current < pasteDebounceTimeMs) {
         return;
       }
       lastPasteTimeRef.current = now;
 
-      const clipboardItems = event.clipboardData?.items;
-      if (!clipboardItems) return;
+      const clipboard = Array.from(event.clipboardData?.items || []);
+      const images = clipboard.filter((item) => item.type.startsWith("image/"));
 
-      // Count image items in clipboard
-      let imageCount = 0;
-      for (let i = 0; i < clipboardItems.length; i++) {
-        if (clipboardItems[i].type.startsWith("image/")) {
-          imageCount++;
-        }
-      }
-
-      if (imageCount === 0) {
+      if (images.length === 0) {
         toast.error("No image found in clipboard.");
+        return;
       }
 
-      // Look for images in clipboard items
-      for (let i = 0; i < clipboardItems.length; i++) {
-        if (clipboardItems[i].type.startsWith("image/")) {
-          const blob = clipboardItems[i].getAsFile();
-          if (blob) {
-            // Create a File from Blob with a proper name
-            const file = new File(
-              [blob],
-              `pasted-image-${new Date().toISOString().replace(/:/g, "-")}.png`,
-              { type: blob.type },
-            );
-            addFiles([file]);
+      if (images.length > 1) {
+        toast.info("Multiple images found. Only using the first one.");
+      }
 
-            // Show message if multiple images were found but only one used
-            if (imageCount > 1) {
-              toast.info("Multiple images found. Only using the first one.");
-            }
-            break; // Only handle the first image
-          }
-        }
+      const imageFile = images[0].getAsFile();
+
+      if (imageFile) {
+        // Create a File with a proper name
+        const file = new File(
+          [imageFile],
+          `pasted-image-${new Date().toISOString().replace(/:/g, "-")}.png`,
+          { type: imageFile.type },
+        );
+
+        addFiles([file]);
+      } else {
+        toast.error("Invalid image!");
       }
     };
 
@@ -277,7 +262,7 @@ export default function ImageUploadInput({
 
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
 
-  const imageFile = filesWithoutError[0]?.file ?? null;
+  const imageFile = validFile?.file ?? null;
 
   useEffect(() => {
     if (!imageFile) {
@@ -293,11 +278,29 @@ export default function ImageUploadInput({
     };
   }, [imageFile]);
 
-  const { palette } = useColorThief(imgSrc ?? "", {
+  const setLoadingState = useSetAtom(loadingStateAtom);
+
+  const { palette, error, loading } = useColorThief(imgSrc ?? "", {
     format: "hex",
     colorCount: 5,
     quality: 5,
   });
+
+  setLoadingState(loading);
+
+  // console.log("\n\n\n\n\n\n\n\n");
+
+  // console.log("1. Loading => \t\t", loading);
+  // console.log("2. Palette => \t\t", palette);
+  // // console.log("Palette length => \t", palette.length);
+  // console.log(
+  //   "3. images.length > 0 && (!palette || palette?.length === 0) => \t\t",
+  //   images.length > 0 && (!palette || palette?.length === 0),
+  // );
+
+  if (error) {
+    toast.error(error);
+  }
 
   const setCustomPickStart = useSetAtom(customPickStartAtom);
   const setCustomPickEnd = useSetAtom(customPickEndAtom);
@@ -325,16 +328,16 @@ export default function ImageUploadInput({
 
   // Handle file deletion - removes all files (including valid ones)
   const handleDeleteClick = useCallback(() => {
-    setImages([]);
-    setPalette([]);
-    setCustomPickStart("");
-    setCustomPickEnd("");
-    setCustomPickStop(50);
-    setGradieMode("Default");
-    setGradientAngle(90);
-    setGradientPosition("center");
-    setGradientType("linear");
-    setRadialShape("circle");
+    setImages(RESET);
+    setPalette(RESET);
+    setCustomPickStart(RESET);
+    setCustomPickEnd(RESET);
+    setCustomPickStop(RESET);
+    setGradieMode(RESET);
+    setGradientAngle(RESET);
+    setGradientPosition(RESET);
+    setGradientType(RESET);
+    setRadialShape(RESET);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -353,7 +356,7 @@ export default function ImageUploadInput({
 
   return (
     <div className={cn("grid", className)} {...rest}>
-      {filesWithoutError.length === 0 ? (
+      {!validFile ? (
         <>
           <div
             ref={dropAreaRef}
@@ -399,17 +402,8 @@ export default function ImageUploadInput({
                           }
                         }}
                       >
-                        file select
+                        file select, camera
                       </label>
-                      <span>, </span>
-                      <span
-                        className="cursor-pointer text-[#1388f2]"
-                        tabIndex={0}
-                        role="button"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        camera
-                      </span>
                       <span>, or paste.</span>
                     </div>
                   </>
@@ -442,73 +436,18 @@ export default function ImageUploadInput({
           <div className="aspect-video w-full rounded-lg">
             <img
               src={imgSrc === "" ? undefined : imgSrc}
-              alt={filesWithoutError[0].file.name}
+              alt={validFile.file.name}
               className="mx-auto h-full rounded-lg"
             />
           </div>
-          {filesWithoutError.length > 0 && (
-            <div
-              key={filesWithoutError[0].key}
-              className={cn(
-                "my-4 flex w-full items-center justify-between rounded-lg border border-solid border-[#cfd2d5] bg-white px-4.5 py-3.5",
-                successAnimation && "animate-pulse border-green-500",
-              )}
-            >
-              <div className="flex">
-                <DocumentIcon className="mr-3.5 min-w-5" aria-hidden="true" />
-                <p
-                  className="font-semibold"
-                  title={filesWithoutError[0].file.name}
-                >
-                  {filesWithoutError[0].file.name.length > 40
-                    ? filesWithoutError[0].file.name.substring(0, 35) + "..."
-                    : filesWithoutError[0].file.name}
-                </p>
-              </div>
-              <button
-                onClick={handleDeleteClick}
-                aria-label="Remove uploaded image"
-                className="rounded-full p-2 hover:cursor-pointer"
-              >
-                <DeleteIcon aria-hidden="true" />
-              </button>
-            </div>
+          {validFile && (
+            <ImageInfo
+              file={validFile}
+              deleteHandler={handleDeleteClick}
+              success={successAnimation}
+            />
           )}
-          {renderedPalette && (
-            <>
-              <div className="flex w-full justify-between gap-x-8 rounded-lg">
-                {renderedPalette?.map((paletteColor) => (
-                  <button
-                    type="button"
-                    key={`${paletteColor}`}
-                    className="flex cursor-pointer flex-col items-center"
-                    onClick={() =>
-                      copyToClipboard(
-                        `${paletteColor}`.toLocaleUpperCase(),
-                        "Color copied!",
-                      )
-                    }
-                  >
-                    <span
-                      className="size-20 rounded-xl"
-                      style={{ background: `${paletteColor}` }}
-                      key={`${paletteColor}`}
-                    />
-                    <small className="w-full max-w-20 py-2 text-center text-xs text-pretty whitespace-normal text-black">
-                      {paletteColor}
-                    </small>
-                  </button>
-                ))}
-              </div>
-              <Alert className="border-gradie-2 mt-4">
-                <InfoIcon className="size-4 animate-pulse motion-reduce:animate-none" />
-                <AlertTitle>Quick tip</AlertTitle>
-                <AlertDescription>
-                  Click any color to copy its value
-                </AlertDescription>
-              </Alert>
-            </>
-          )}
+          {renderedPalette && <PaletteContainer palette={renderedPalette} />}
         </div>
       )}
 
