@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atomWithReset } from "jotai/utils";
 import type { ColorFormat } from "@/types";
 
-export const colorFormatAtom = atom<ColorFormat>("hex");
+export const colorFormatAtom = atomWithReset<ColorFormat>("hex");

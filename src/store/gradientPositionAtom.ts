@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atomWithReset } from "jotai/utils";
 import type { GradientPosition } from "@/types";
 
-export const gradientPositionAtom = atom<GradientPosition>("center");
+export const gradientPositionAtom = atomWithReset<GradientPosition>("center");

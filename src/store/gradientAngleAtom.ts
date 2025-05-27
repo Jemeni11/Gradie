@@ -1,3 +1,3 @@
-import { atom } from "jotai";
+import { atomWithReset } from "jotai/utils";
 
-export const gradientAngleAtom = atom<number>(90);
+export const gradientAngleAtom = atomWithReset<number>(90);

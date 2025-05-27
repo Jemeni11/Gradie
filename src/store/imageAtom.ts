@@ -1,4 +1,4 @@
+import { atomWithReset } from "jotai/utils";
 import { ValidatedFile } from "@/types";
-import { atom } from "jotai";
 
-export const imageAtom = atom<ValidatedFile[]>([]);
+export const imageAtom = atomWithReset<ValidatedFile[]>([]);

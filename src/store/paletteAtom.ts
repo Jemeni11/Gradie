@@ -1,7 +1,8 @@
 import { atom } from "jotai";
+import { atomWithReset } from "jotai/utils";
 
 // The palette is an array of exactly 5 hex color strings
-export const paletteAtom = atom<string[] | null>(null);
+export const paletteAtom = atomWithReset<string[] | null>(null);
 
 export const dominantColorAtom = atom((get) => {
   const palette = get(paletteAtom);

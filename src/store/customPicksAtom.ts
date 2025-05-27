@@ -1,5 +1,5 @@
-import { atom } from "jotai";
+import { atomWithReset } from "jotai/utils";
 
-export const customPickStartAtom = atom<string>("");
-export const customPickEndAtom = atom<string>("");
-export const customPickStopAtom = atom<number>(50);
+export const customPickStartAtom = atomWithReset<string>("");
+export const customPickEndAtom = atomWithReset<string>("");
+export const customPickStopAtom = atomWithReset<number>(50);
