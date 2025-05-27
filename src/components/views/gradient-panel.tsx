@@ -1,8 +1,6 @@
 import { useAtomValue, useAtom } from "jotai";
 import {
   convertedPaletteAtom,
-  dominantConvertedColorAtom,
-  colorFormatAtom,
   gradieModeAtom,
   gradientTypeAtom,
   gradientPositionAtom,
@@ -11,6 +9,8 @@ import {
   customPickStartAtom,
   customPickStopAtom,
   customPickEndAtom,
+  imageAtom,
+  loadingStateAtom,
 } from "@/store";
 import {
   Select,
@@ -31,11 +31,10 @@ import {
 } from "@/types";
 import { capitalizeFirstLetter } from "@/utils";
 import GradientArea from "./gradient-area";
+import Loader from "./loader";
 
 export default function GradientPanel() {
-  const dominantColor = useAtomValue(dominantConvertedColorAtom);
   const palette = useAtomValue(convertedPaletteAtom);
-  const colorFormat = useAtomValue(colorFormatAtom);
 
   const [gradientType, setGradientType] = useAtom(gradientTypeAtom);
   const [gradieMode, setGradieMode] = useAtom(gradieModeAtom);
@@ -48,7 +47,11 @@ export default function GradientPanel() {
 
   const [radialShape, setRadialShape] = useAtom(radialShapeAtom);
 
-  if (!palette || !dominantColor) {
+  const image = useAtomValue(imageAtom);
+
+  const loadingState = useAtomValue(loadingStateAtom);
+
+  if (image.length === 0 || !palette) {
     return (
       <div className="border-gradie-2 flex size-full flex-col items-center gap-4 rounded-lg border border-solid py-4">
         Upload an image!
@@ -56,15 +59,13 @@ export default function GradientPanel() {
     );
   }
 
+  if (loadingState) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex size-full flex-col gap-4 p-8">
-      <GradientArea
-        dominant={dominantColor}
-        gradieMode={gradieMode}
-        gradientType={gradientType}
-        palette={palette}
-        colorFormat={colorFormat}
-      />
+      <GradientArea gradieMode={gradieMode} gradientType={gradientType} />
 
       <div>
         <h2 className="mb-4">Gradie Mode</h2>
@@ -140,7 +141,12 @@ export default function GradientPanel() {
             step={1}
             max={360}
             inputMode="numeric"
-            onChange={(e) => setGradientAngle(+e.target.value)}
+            onChange={(e) => {
+              const numValue = Number(e.target.value);
+              if (!isNaN(numValue)) {
+                setGradientAngle(Math.max(-360, Math.min(360, numValue)));
+              }
+            }}
             className="mt-4 w-full"
             placeholder="Angle in degrees"
           />
