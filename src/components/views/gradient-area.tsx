@@ -47,45 +47,56 @@ export default function GradientArea({
 
   const getGradientDirection = () => {
     if (gradientType === "linear") {
-      return `${angle}deg, `;
+      return `${angle}deg`;
     } else if (gradientType === "radial") {
-      return `${radialShape} at ${position}, `;
+      return `${radialShape} at ${position}`;
     } else if (gradientType === "conic") {
-      return `from ${angle}deg at ${position}, `;
+      return `from ${angle}deg at ${position}`;
     }
     return "";
   };
 
   const direction = getGradientDirection();
 
+  const getDirectionWithComma = () => {
+    if (!direction) return "";
+
+    if (interpolation) {
+      return `${direction} `;
+    }
+    return `${direction}, `;
+  };
+
+  const directionWithComma = getDirectionWithComma();
+
   let gradientString = "";
 
   switch (gradieMode) {
     case "Default":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${palette[1]})`;
+      gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${palette[1]})`;
       break;
 
     case "Suprise Me!":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getRandomFromSlice(palette, 1)})`;
+      gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${getRandomFromSlice(palette, 1)})`;
       break;
 
     case "Bold Pop":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getMostContrastingColor(paletteWithoutDominant, dominant, colorFormat)})`;
+      gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${getMostContrastingColor(paletteWithoutDominant, dominant, colorFormat)})`;
       break;
 
     case "Soft Sweep":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${getMostDifferentHue(paletteWithoutDominant, dominant, colorFormat)})`;
+      gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${getMostDifferentHue(paletteWithoutDominant, dominant, colorFormat)})`;
       break;
 
     case "Full Blend":
-      gradientString = `${gradientType}-gradient(${direction}${interpolation}${palette.join(", ")})`;
+      gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${palette.join(", ")})`;
       break;
 
     case "Custom":
       if (start && end) {
-        gradientString = `${gradientType}-gradient(${direction}${interpolation}${start} ${stop}%, ${end})`;
+        gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${start} ${stop}%, ${end})`;
       } else {
-        gradientString = `${gradientType}-gradient(${direction}${interpolation}${dominant}, ${palette[1]})`;
+        gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${palette[1]})`;
       }
       break;
   }
