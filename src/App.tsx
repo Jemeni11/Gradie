@@ -22,8 +22,11 @@ export default function App() {
           TODO
           <ul>
             <li>Download button</li>
-            <li>Fix loader</li>
+            <li>Bug: Uploading an image with one colour</li>
+            <li>Bug: fix colour banding on certain linear gradients</li>
+            <li>Bug: Gradient Type selector can have no value</li>
             <li>add wiki/faq</li>
+            <li>update ui of uploader</li>
             <li>analytics</li>
             <li>mobile responsiveness</li>
             <li>???</li>
