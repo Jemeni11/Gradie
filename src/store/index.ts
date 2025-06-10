@@ -3,6 +3,14 @@ import {
   convertedPaletteAtom,
   dominantConvertedColorAtom,
 } from "./convertedPaletteAtom";
+import {
+  downloadConfigAtom,
+  previewDimensionsAtom,
+  selectedDimensionsAtom,
+  selectedFormatAtom,
+  selectedFilenameAtom,
+  dimensionModeAtom,
+} from "./downloadConfigAtom";
 import { imageAtom } from "./imageAtom";
 import { paletteAtom, dominantColorAtom } from "./paletteAtom";
 import { gradieModeAtom } from "./gradieModeAtom";
@@ -16,6 +24,7 @@ import {
 } from "./customPicksAtom";
 import { radialShapeAtom } from "./radialShapeAtom";
 import { loadingStateAtom } from "./loadingStateAtom";
+import { gradientStringAtom } from "./gradientStringAtom";
 
 export {
   colorFormatAtom,
@@ -33,4 +42,11 @@ export {
   customPickEndAtom,
   radialShapeAtom,
   loadingStateAtom,
+  gradientStringAtom,
+  downloadConfigAtom,
+  previewDimensionsAtom,
+  selectedDimensionsAtom,
+  selectedFormatAtom,
+  selectedFilenameAtom,
+  dimensionModeAtom,
 };
