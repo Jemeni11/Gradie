@@ -6,7 +6,7 @@ import {
 } from "@/utils";
 import { colorInterpolationMethodMapper } from "@/constants";
 import type { GradieMode, GradientType } from "@/types";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   customPickStartAtom,
   customPickEndAtom,
@@ -17,7 +17,11 @@ import {
   dominantConvertedColorAtom,
   convertedPaletteAtom,
   colorFormatAtom,
+  gradientStringAtom,
 } from "@/store";
+import GradientPreview from "./gradient-preview";
+import DownloadDialog from "./download-dialog";
+import { useEffect } from "react";
 
 export default function GradientArea({
   gradieMode,
@@ -35,13 +39,11 @@ export default function GradientArea({
 
   const radialShape = useAtomValue(radialShapeAtom);
 
-  const dominant = useAtomValue(dominantConvertedColorAtom);
-  const palette = useAtomValue(convertedPaletteAtom);
+  const dominant = useAtomValue(dominantConvertedColorAtom)!;
+  const palette = useAtomValue(convertedPaletteAtom)!;
   const colorFormat = useAtomValue(colorFormatAtom);
 
-  if (!palette || !dominant) {
-    return <div>No palette available</div>;
-  }
+  const setGradientString = useSetAtom(gradientStringAtom);
 
   const paletteWithoutDominant = palette.slice(1);
   const interpolation = colorInterpolationMethodMapper[colorFormat];
@@ -77,7 +79,7 @@ export default function GradientArea({
       gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${palette[1]})`;
       break;
 
-    case "Suprise Me!":
+    case "Surprise Me!":
       gradientString = `${gradientType}-gradient(${directionWithComma}${interpolation}${dominant}, ${getRandomFromSlice(palette, 1)})`;
       break;
 
@@ -106,21 +108,27 @@ export default function GradientArea({
     copyToClipboard(gradientString, "CSS copied to clipboard!");
   };
 
+  useEffect(() => {
+    setGradientString(gradientString);
+  }, [gradientString, setGradientString]);
+
+  if (!palette) {
+    return <div>No palette available</div>;
+  }
+
   return (
     <>
-      <div
-        className="border-gradie-1 aspect-video w-full rounded-lg border border-solid"
-        style={{
-          backgroundImage: gradientString,
-        }}
-      />
-      <button
-        className="border-gradie-2 cursor-pointer rounded-lg border border-solid px-4 py-2 text-black"
-        onClick={copyGradientCSS}
-        type="button"
-      >
-        Copy Gradient
-      </button>
+      <GradientPreview gradient={gradientString} />
+      <div className="flex w-full items-center gap-2">
+        <button
+          className="border-gradie-2 flex-1 cursor-pointer rounded-lg border border-solid px-4 py-2 font-bold text-black"
+          onClick={copyGradientCSS}
+          type="button"
+        >
+          Copy
+        </button>
+        <DownloadDialog />
+      </div>
     </>
   );
 }
