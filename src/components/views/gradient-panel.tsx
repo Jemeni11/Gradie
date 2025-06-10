@@ -78,8 +78,11 @@ export default function GradientPanel() {
           </SelectTrigger>
           <SelectContent>
             {gradieModes.map((mode) => (
-              <SelectItem key={mode} value={mode}>
-                {mode}
+              <SelectItem key={mode.name} value={mode.name}>
+                <p className="flex flex-col">
+                  <span className="mb-2">{mode.name}</span>
+                  <small>{mode.description}</small>
+                </p>
               </SelectItem>
             ))}
           </SelectContent>
