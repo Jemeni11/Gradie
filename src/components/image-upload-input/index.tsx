@@ -286,7 +286,9 @@ export default function ImageUploadInput({
     quality: 5,
   });
 
-  setLoadingState(loading);
+  useEffect(() => {
+    setLoadingState(loading);
+  }, [loading, setLoadingState]);
 
   // console.log("\n\n\n\n\n\n\n\n");
 
@@ -298,9 +300,11 @@ export default function ImageUploadInput({
   //   images.length > 0 && (!palette || palette?.length === 0),
   // );
 
-  if (error) {
-    toast.error(error);
-  }
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const setCustomPickStart = useSetAtom(customPickStartAtom);
   const setCustomPickEnd = useSetAtom(customPickEndAtom);
@@ -402,7 +406,7 @@ export default function ImageUploadInput({
                           }
                         }}
                       >
-                        file select, camera
+                        file select
                       </label>
                       <span>, or paste.</span>
                     </div>
@@ -415,7 +419,6 @@ export default function ImageUploadInput({
                   id="ImageUpload"
                   name="ImageUpload"
                   accept="image/*"
-                  capture="environment"
                   className="h-0 w-0 opacity-0"
                   onChange={handleFileUpload}
                   aria-label="Upload image"
