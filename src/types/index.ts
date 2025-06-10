@@ -16,7 +16,7 @@ export type ColorFormat =
 
 export type GradieMode =
   | "Default"
-  | "Suprise Me!"
+  | "Surprise Me!"
   | "Bold Pop"
   | "Soft Sweep"
   | "Full Blend"
@@ -36,3 +36,72 @@ export type GradientPosition =
   | "right bottom";
 
 export type RadialShape = "circle" | "ellipse";
+
+export type FileFormat = "webp" | "png" | "jpeg" | "svg";
+
+export type DimensionPreset =
+  | "square-1080"
+  | "square-1200"
+  | "vertical-story"
+  | "vertical-mobile-wallpaper"
+  | "horizontal-twitter"
+  | "horizontal-og"
+  | "portrait-post"
+  | "youtube-thumbnail"
+  | "youtube-banner"
+  | "fhd-landscape"
+  | "uhd-landscape"
+  | "ultrawide"
+  | "blog-header"
+  | "email-header"
+  | "tablet-wallpaper";
+
+export type PresetCategory = "social" | "wallpaper" | "presentation" | "web";
+
+export type DimensionPresetObjectArray = Record<
+  DimensionPreset,
+  {
+    width: number;
+    height: number;
+    label: string;
+    useCases: string[];
+    category: PresetCategory;
+  }
+>;
+
+export type AspectRatio =
+  | "square"
+  | "landscape"
+  | "portrait"
+  | "widescreen"
+  | "classic"
+  | "golden"
+  | "cinematic";
+
+export type DimensionMode =
+  | "preset" // Choose from predefined sizes
+  | "aspect-ratio" // Pick ratio + one dimension
+  | "custom" // Free-form width/height
+  | "original" // Use uploaded image dimensions
+  | "viewport"; // Use browser window size
+
+export type DimensionModeObject = { name: DimensionMode; definition: string };
+
+export interface DownloadConfig {
+  // File settings
+  format: FileFormat;
+  filename: string;
+  quality: number; // 0-100, only applies to lossy formats
+
+  // Dimension settings
+  dimensionMode: DimensionMode;
+  preset?: DimensionPreset;
+  aspectRatio?: AspectRatio;
+  width: number;
+  height: number;
+  maintainAspectRatio: boolean;
+
+  // Advanced options
+  includeMetadata: boolean; // EXIF data, etc
+  backgroundColor?: string; // for formats that don't support transparency
+}
