@@ -4,6 +4,7 @@ import {
   Hero,
   PalettePanel,
   GradientPanel,
+  Wiki,
   Footer,
 } from "./components/views";
 
@@ -18,10 +19,10 @@ export default function App() {
           <PalettePanel />
           <GradientPanel />
         </div>
+        <Wiki />
         <div className="mt-8">
           TODO
           <ul>
-            <li>Bug: Uploading an image with one colour</li>
             <li>Bug: fix colour banding on certain linear gradients</li>
             <li>add wiki/faq</li>
             <li>update ui of uploader</li>
