@@ -23,6 +23,8 @@ import {
   gradientTypeAtom,
   radialShapeAtom,
   loadingStateAtom,
+  originalImageSizeAtom,
+  downloadConfigAtom,
 } from "@/store";
 import { cn } from "@/lib/utils";
 import { generateUUID } from "@/utils";
@@ -48,9 +50,12 @@ export default function ImageUploadInput({
   className?: string;
 }>) {
   const [images, setImages] = useAtom(imageAtom);
-
+  const imageRef = useRef<HTMLImageElement>(null);
   const [dragIsOver, setDragIsOver] = useState(false);
   const [successAnimation, setSuccessAnimation] = useState(false);
+  const setDownloadConfig = useSetAtom(downloadConfigAtom);
+  const setOriginalImageSize = useSetAtom(originalImageSizeAtom);
+
   const dropAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastPasteTimeRef = useRef<number>(0);
@@ -235,7 +240,7 @@ export default function ImageUploadInput({
   // Success toast
   useEffect(() => {
     if (successAnimation) {
-      toast.success("Image has been uploaded.");
+      toast.success("Palette has been generated.");
     }
   }, [successAnimation]);
 
@@ -263,6 +268,25 @@ export default function ImageUploadInput({
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
 
   const imageFile = validFile?.file ?? null;
+
+  useEffect(() => {
+    if (!imgSrc || !imageRef.current) return;
+
+    const img = imageRef.current;
+
+    const updateDimensions = () => {
+      const { naturalWidth: width, naturalHeight: height } = img;
+      setDownloadConfig((prev) => ({ ...prev, width, height }));
+      setOriginalImageSize({ width, height });
+    };
+
+    if (img.complete && img.naturalWidth !== 0) {
+      updateDimensions();
+    } else {
+      img.addEventListener("load", updateDimensions);
+      return () => img.removeEventListener("load", updateDimensions);
+    }
+  }, [imgSrc, imageRef, setDownloadConfig, setOriginalImageSize]);
 
   useEffect(() => {
     if (!imageFile) {
@@ -342,6 +366,7 @@ export default function ImageUploadInput({
     setGradientPosition(RESET);
     setGradientType(RESET);
     setRadialShape(RESET);
+    setOriginalImageSize(RESET);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -356,6 +381,7 @@ export default function ImageUploadInput({
     setImages,
     setPalette,
     setRadialShape,
+    setOriginalImageSize,
   ]);
 
   return (
@@ -438,6 +464,7 @@ export default function ImageUploadInput({
         <div className="p-8">
           <div className="aspect-video w-full rounded-lg">
             <img
+              ref={imageRef}
               src={imgSrc === "" ? undefined : imgSrc}
               alt={validFile.file.name}
               className="mx-auto h-full rounded-lg"
