@@ -68,8 +68,21 @@ export default function ImageUploadInput({
   useEffect(() => {
     if (error) {
       toast.error(error);
+      return;
     }
-  }, [error]);
+
+    // Handle "invalid" image if palette is too short
+    if (
+      !loading &&
+      !error &&
+      Array.isArray(palette) &&
+      palette.length == 1 &&
+      imageFile
+    ) {
+      toast.error("Image appears to be too plain to generate a palette.");
+      handleDeleteClick();
+    }
+  }, [error, loading, palette, handleDeleteClick, imageFile]);
 
   useEffect(() => {
     if (!imgSrc || !imageRef.current) return;
