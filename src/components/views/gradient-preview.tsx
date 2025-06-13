@@ -13,10 +13,7 @@ export default function GradientPreview({
   return (
     <div
       ref={ref}
-      className={cn(
-        "gradient-preview aspect-video w-full rounded-lg",
-        className,
-      )}
+      className={cn("aspect-video w-full rounded-lg", className)}
       style={{
         backgroundImage: gradient,
         transform: "translate3d(0,0,0)",
