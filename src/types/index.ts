@@ -58,16 +58,14 @@ export type DimensionPreset =
 
 export type PresetCategory = "social" | "wallpaper" | "presentation" | "web";
 
-export type DimensionPresetObjectArray = Record<
-  DimensionPreset,
-  {
-    width: number;
-    height: number;
-    label: string;
-    useCases: string[];
-    category: PresetCategory;
-  }
->;
+export type DimensionPresetObjectArray = {
+  key: DimensionPreset;
+  width: number;
+  height: number;
+  label: string;
+  useCases: string[];
+  category: PresetCategory;
+}[];
 
 export type AspectRatio =
   | "square"
@@ -79,11 +77,16 @@ export type AspectRatio =
   | "cinematic";
 
 export type DimensionMode =
-  | "preset" // Choose from predefined sizes
-  | "aspect-ratio" // Pick ratio + one dimension
-  | "custom" // Free-form width/height
-  | "original" // Use uploaded image dimensions
-  | "viewport"; // Use browser window size
+  // Choose from predefined sizes
+  | "preset"
+  // Pick ratio + one dimension
+  | "aspect-ratio"
+  // Free-form width/height
+  | "custom"
+  // Use uploaded image dimensions
+  | "original"
+  // Use browser window size
+  | "viewport";
 
 export type DimensionModeObject = { name: DimensionMode; definition: string };
 
