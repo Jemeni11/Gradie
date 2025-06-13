@@ -6,8 +6,6 @@ import generateUUID from "./generateUUID";
 import getMostContrastingColor from "./getMostContrastingColor";
 import getMostDifferentHue from "./getMostDifferentHue";
 import getRandomFromSlice from "./getRandomFromSlice";
-import getPresetsByCategory from "./getPresetsByCategory";
-import getRecommendedFormat from "./getRecommendedFormat";
 
 export {
   calculateAspectRatioDimensions,
@@ -18,6 +16,4 @@ export {
   getMostContrastingColor,
   getMostDifferentHue,
   getRandomFromSlice,
-  getPresetsByCategory,
-  getRecommendedFormat,
 };
