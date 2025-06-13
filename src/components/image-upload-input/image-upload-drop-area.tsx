@@ -9,7 +9,7 @@ type Props = {
   handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
   handleDragLeave: (event: React.DragEvent<HTMLDivElement>) => void;
   handleDrop: (event: React.DragEvent<HTMLDivElement>) => void;
-  addFiles: (files: File[]) => void;
+  addFiles: (files: File[], uploadMethod: "drag" | "paste" | "file") => void;
   successAnimation: boolean;
   onDragOver?: () => void;
 };
@@ -94,7 +94,7 @@ export default function ImageUploadDropArea({
             name="ImageUpload"
             accept="image/*"
             className="h-0 w-0 opacity-0"
-            onChange={(e) => addFiles(Array.from(e.target.files ?? []))}
+            onChange={(e) => addFiles(Array.from(e.target.files ?? []), "file")}
             aria-label="Upload image"
           />
         </div>

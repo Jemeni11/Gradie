@@ -1,4 +1,3 @@
-// hooks/useImageUpload.ts
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { RESET } from "jotai/utils";
@@ -18,8 +17,11 @@ import {
   radialShapeAtom,
   originalImageSizeAtom,
 } from "@/store";
+import { usePostHog } from "posthog-js/react";
 
 export function useImageUpload(onDrop?: (files: File[]) => void) {
+  const posthog = usePostHog();
+
   const [images, setImages] = useAtom(imageAtom);
   const setPalette = useSetAtom(paletteAtom);
   const setCustomPickStart = useSetAtom(customPickStartAtom);
@@ -71,7 +73,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
   }, []);
 
   const addFiles = useCallback(
-    (filesToAdd: File[]) => {
+    (filesToAdd: File[], uploadMethod: "drag" | "paste" | "file" = "file") => {
       if (filesToAdd.length > 1) {
         toast.info("Only one image allowed. Using the first one.");
       }
@@ -90,10 +92,19 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
       if (newFile.status.length === 0) {
         setSuccessAnimation(true);
         setTimeout(() => setSuccessAnimation(false), 1500);
+        posthog?.capture("image_uploaded", {
+          type: newFile.file.type,
+          size_kb: Math.round(newFile.file.size / 1024),
+          method: uploadMethod,
+        });
         onDrop?.([newFile.file]);
+      } else {
+        posthog?.capture("image_rejected", {
+          reason: newFile.status.join(", "),
+        });
       }
     },
-    [validateFile, onDrop, setImages],
+    [validateFile, onDrop, setImages, posthog],
   );
 
   const handlePaste = useCallback(
@@ -120,7 +131,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
           `pasted-image-${new Date().toISOString().replace(/:/g, "-")}.png`,
           { type: imageFile.type },
         );
-        addFiles([file]);
+        addFiles([file], "paste");
       } else {
         toast.error("Invalid image!");
       }
@@ -174,7 +185,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
       );
 
       if (droppedFiles.length > 0) {
-        addFiles([droppedFiles[0]]);
+        addFiles([droppedFiles[0]], "drag");
       } else {
         toast.warning("No valid images found in dropped files.");
       }

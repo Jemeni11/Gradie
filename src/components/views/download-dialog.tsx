@@ -42,8 +42,11 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 import { capitalizeFirstLetter } from "@/utils";
 import GradientPreview from "./gradient-preview";
 import { toast } from "sonner";
+import { usePostHog } from "posthog-js/react";
 
 export default function DownloadDialog() {
+  const posthog = usePostHog();
+
   const gradientString = useAtomValue(gradientStringAtom);
   const previewRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -176,11 +179,18 @@ export default function DownloadDialog() {
       document.body.removeChild(link);
 
       toast.success("Download completed!");
+
+      posthog?.capture("download_successful", {
+        format: fileFormatConfig?.name,
+      });
     } catch (error) {
       console.error("Download failed:", error);
       toast.error(
         `Download failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
+      posthog?.capture("download_failed", {
+        reason: `${error instanceof Error ? error.message : error}`,
+      });
     } finally {
       setIsDownloading(false);
     }
@@ -244,9 +254,13 @@ export default function DownloadDialog() {
           width: preset.width,
           height: preset.height,
         });
+        posthog?.capture("preset_selected", {
+          name: preset.label,
+          category: preset.category,
+        });
       }
     },
-    [updateConfig],
+    [updateConfig, posthog],
   );
 
   const updateFilename = useCallback(

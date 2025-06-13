@@ -16,6 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import PaletteContainer from "./palette-container";
 import ImageInfo from "./image-info";
 import ImageUploadDropArea from "./image-upload-drop-area";
+import { usePostHog } from "posthog-js/react";
 
 /**
  * The ImageUploadInput component provides a user interface for image uploads.
@@ -32,6 +33,8 @@ export default function ImageUploadInput({
   onDragOver?: () => void;
   className?: string;
 }>) {
+  const posthog = usePostHog();
+
   const {
     dragIsOver,
     successAnimation,
@@ -80,9 +83,12 @@ export default function ImageUploadInput({
       imageFile
     ) {
       toast.error("Image appears to be too plain to generate a palette.");
+      posthog?.capture("image_rejected", {
+        reason: "Image appears to be too plain to generate a palette.",
+      });
       handleDeleteClick();
     }
-  }, [error, loading, palette, handleDeleteClick, imageFile]);
+  }, [error, loading, palette, posthog, handleDeleteClick, imageFile]);
 
   useEffect(() => {
     if (!imgSrc || !imageRef.current) return;
@@ -117,8 +123,11 @@ export default function ImageUploadInput({
   useEffect(() => {
     if (Array.isArray(palette)) {
       setPalette(palette as string[]);
+      posthog?.capture("palette_generated", {
+        palette_size: palette.length,
+      });
     }
-  }, [palette, setPalette]);
+  }, [palette, setPalette, posthog]);
 
   const convertedPalette = useAtomValue(convertedPaletteAtom);
   const renderedPalette = convertedPalette ?? palette;
