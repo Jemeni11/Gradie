@@ -118,7 +118,10 @@ export default function GradientArea({
 
   return (
     <>
-      <GradientPreview gradient={gradientString} />
+      <GradientPreview
+        gradient={gradientString}
+        className="border-gradie-1 border border-solid"
+      />
       <div className="flex w-full items-center gap-2">
         <button
           className="border-gradie-2 flex-1 cursor-pointer rounded-lg border border-solid px-4 py-2 font-bold text-black"
