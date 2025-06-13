@@ -21,7 +21,6 @@ export default function App() {
         <div className="mt-8">
           TODO
           <ul>
-            <li>Download button</li>
             <li>Bug: Uploading an image with one colour</li>
             <li>Bug: fix colour banding on certain linear gradients</li>
             <li>Bug: Gradient Type selector can have no value</li>
