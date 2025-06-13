@@ -95,7 +95,11 @@ export default function GradientPanel() {
           type="single"
           className="border-gradie-2 flex w-full border border-solid"
           value={gradientType}
-          onValueChange={(value) => setGradientType(value as GradientType)}
+          onValueChange={(value) => {
+            if (value) {
+              setGradientType(value as GradientType);
+            }
+          }}
         >
           {gradientTypes.map((type) => (
             <ToggleGroupItem
