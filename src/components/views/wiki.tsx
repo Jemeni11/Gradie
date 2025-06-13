@@ -6,9 +6,9 @@ export default function Wiki() {
         Wiki
       </h2>
       <hr />
-      <p className="mx-auto mb-16 max-w-2xs text-center text-lg leading-7 lg:max-w-96 [&:not(:first-child)]:mt-6">
+      <p className="mx-auto mb-16 w-full text-lg leading-7 [&:not(:first-child)]:mt-6">
         Gradie is a complicated app. Or at least more complicated than I
-        imagined. So here's a section to help.
+        imagined. So here's a help/faq section.
       </p>
     </section>
   );
