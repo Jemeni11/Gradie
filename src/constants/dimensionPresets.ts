@@ -1,15 +1,17 @@
 import { DimensionPresetObjectArray } from "@/types";
 
-const dimensionPresets: DimensionPresetObjectArray = {
+const dimensionPresets: DimensionPresetObjectArray = [
   // Square formats
-  "square-1080": {
+  {
+    key: "square-1080",
     width: 1080,
     height: 1080,
     label: "Square (1080x1080)",
     useCases: ["Instagram Post", "Instagram Carousel"],
     category: "social",
   },
-  "square-1200": {
+  {
+    key: "square-1200",
     width: 1200,
     height: 1200,
     label: "Square (1200x1200)",
@@ -18,14 +20,16 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Vertical story/video formats
-  "vertical-story": {
+  {
+    key: "vertical-story",
     width: 1080,
     height: 1920,
     label: "Vertical Story (9:16)",
     useCases: ["Instagram Story", "Instagram Reel", "TikTok Video"],
     category: "social",
   },
-  "vertical-mobile-wallpaper": {
+  {
+    key: "vertical-mobile-wallpaper",
     width: 1080,
     height: 2340,
     label: "Mobile Wallpaper",
@@ -34,14 +38,16 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Horizontal social formats
-  "horizontal-twitter": {
+  {
+    key: "horizontal-twitter",
     width: 1200,
     height: 675,
     label: "Horizontal (16:9)",
     useCases: ["Twitter Post", "X Post"],
     category: "social",
   },
-  "horizontal-og": {
+  {
+    key: "horizontal-og",
     width: 1200,
     height: 630,
     label: "Open Graph (1.91:1)",
@@ -50,7 +56,8 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Portrait post format
-  "portrait-post": {
+  {
+    key: "portrait-post",
     width: 1080,
     height: 1350,
     label: "Portrait Post (4:5)",
@@ -59,14 +66,16 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // YouTube formats
-  "youtube-thumbnail": {
+  {
+    key: "youtube-thumbnail",
     width: 1280,
     height: 720,
     label: "YouTube Thumbnail (16:9)",
     useCases: ["YouTube Thumbnail", "Video Preview"],
     category: "social",
   },
-  "youtube-banner": {
+  {
+    key: "youtube-banner",
     width: 2560,
     height: 1440,
     label: "YouTube Banner",
@@ -75,7 +84,8 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Full HD formats
-  "fhd-landscape": {
+  {
+    key: "fhd-landscape",
     width: 1920,
     height: 1080,
     label: "Full HD (16:9)",
@@ -90,7 +100,8 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // 4K formats
-  "uhd-landscape": {
+  {
+    key: "uhd-landscape",
     width: 3840,
     height: 2160,
     label: "4K UHD (16:9)",
@@ -99,7 +110,8 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Ultrawide
-  ultrawide: {
+  {
+    key: "ultrawide",
     width: 3440,
     height: 1440,
     label: "Ultrawide (21:9)",
@@ -108,14 +120,16 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Web specific
-  "blog-header": {
+  {
+    key: "blog-header",
     width: 1200,
     height: 400,
     label: "Blog Header (3:1)",
     useCases: ["Blog Header", "Article Banner"],
     category: "web",
   },
-  "email-header": {
+  {
+    key: "email-header",
     width: 600,
     height: 200,
     label: "Email Header (3:1)",
@@ -124,13 +138,14 @@ const dimensionPresets: DimensionPresetObjectArray = {
   },
 
   // Tablet
-  "tablet-wallpaper": {
+  {
+    key: "tablet-wallpaper",
     width: 2048,
     height: 2732,
     label: "Tablet Wallpaper (3:4)",
     useCases: ["iPad Wallpaper", "Tablet Background"],
     category: "wallpaper",
   },
-};
+];
 
 export default dimensionPresets;
