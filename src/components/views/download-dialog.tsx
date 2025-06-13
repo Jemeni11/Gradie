@@ -1,12 +1,6 @@
 import { useAtomValue, useAtom } from "jotai";
-import { useMemo, useRef, useState } from "react";
-import {
-  // domToPng,
-  domToJpeg,
-  domToSvg,
-  domToWebp,
-} from "modern-screenshot";
-import * as htmlToImage from "html-to-image";
+import { useMemo, useRef, useState, useCallback } from "react";
+import { domToJpeg, domToPng, domToSvg, domToWebp } from "modern-screenshot";
 import {
   gradientStringAtom,
   originalImageSizeAtom,
@@ -45,6 +39,7 @@ import {
   downloadAspectRatios,
 } from "@/constants";
 import { useWindowSize } from "@/hooks/useWindowSize";
+import { capitalizeFirstLetter } from "@/utils";
 import GradientPreview from "./gradient-preview";
 import { toast } from "sonner";
 
@@ -57,14 +52,31 @@ export default function DownloadDialog() {
   const originalImageSize = useAtomValue(originalImageSizeAtom);
   const { height: browserHeight, width: browserWidth } = useWindowSize();
 
+  // Helper to calculate dimensions based on aspect ratio
+  const calculateAspectRatioDimensions = useCallback(
+    (aspectRatio: AspectRatio, width: number, height: number) => {
+      const ratio = downloadAspectRatios[aspectRatio].ratio;
+
+      // Use whichever dimension is set (non-zero) to calculate the other
+      if (width > 0 && height <= 0) {
+        return { width, height: Math.round(width / ratio) };
+      } else if (height > 0 && width <= 0) {
+        return { width: Math.round(height * ratio), height };
+      } else if (width > 0 && height > 0) {
+        // Both are set, use width as primary and calculate height
+        return { width, height: Math.round(width / ratio) };
+      }
+
+      // Neither dimension is set, use default
+      return { width: 1920, height: Math.round(1920 / ratio) };
+    },
+    [],
+  );
+
   const exportDimensions = useMemo(() => {
     const preset = dimensionPresets.find(
       (p) => p.key === downloadConfig.preset,
     );
-
-    const aspectRatio = downloadConfig.aspectRatio
-      ? downloadAspectRatios[downloadConfig.aspectRatio]
-      : null;
 
     switch (downloadConfig.dimensionMode) {
       case "viewport":
@@ -79,27 +91,43 @@ export default function DownloadDialog() {
           ? { width: preset.width, height: preset.height }
           : { width: downloadConfig.width, height: downloadConfig.height };
       case "aspect-ratio":
-        if (aspectRatio) {
-          const ratio = aspectRatio.ratio;
-          const width = downloadConfig.width;
-          const height = downloadConfig.height;
-
-          // Use whichever dimension is set (non-zero) to calculate the other
-          if (width > 0 && height <= 0) {
-            return { width, height: Math.round(width / ratio) };
-          } else if (height > 0 && width <= 0) {
-            return { width: Math.round(height * ratio), height };
-          } else if (width > 0 && height > 0) {
-            // Both are set, use width as primary and calculate height
-            return { width, height: Math.round(width / ratio) };
-          }
-        }
-        return { width: downloadConfig.width, height: downloadConfig.height };
+        return downloadConfig.aspectRatio
+          ? calculateAspectRatioDimensions(
+              downloadConfig.aspectRatio,
+              downloadConfig.width,
+              downloadConfig.height,
+            )
+          : { width: downloadConfig.width, height: downloadConfig.height };
       case "custom":
       default:
         return { width: downloadConfig.width, height: downloadConfig.height };
     }
-  }, [downloadConfig, browserWidth, browserHeight, originalImageSize]);
+  }, [
+    downloadConfig,
+    browserWidth,
+    browserHeight,
+    originalImageSize,
+    calculateAspectRatioDimensions,
+  ]);
+
+  // Generic config updater
+  const updateConfig = useCallback(
+    (updates: Partial<DownloadConfig>) => {
+      setDownloadConfig((prev) => ({ ...prev, ...updates }));
+    },
+    [setDownloadConfig],
+  );
+
+  // Export functions map
+  const exportFunctions = useMemo(
+    () => ({
+      png: domToPng,
+      webp: domToWebp,
+      jpeg: domToJpeg,
+      svg: domToSvg,
+    }),
+    [],
+  );
 
   const handleDownload = async () => {
     if (!previewRef.current) {
@@ -130,27 +158,13 @@ export default function DownloadDialog() {
         },
       };
 
-      let dataUrl: string;
-
-      switch (downloadConfig.format) {
-        case "png":
-          dataUrl = await htmlToImage.toPng(previewRef.current, {
-            ...exportOptions,
-            skipFonts: true,
-          });
-          break;
-        case "webp":
-          dataUrl = await domToWebp(previewRef.current, exportOptions);
-          break;
-        case "jpeg":
-          dataUrl = await domToJpeg(previewRef.current, exportOptions);
-          break;
-        case "svg":
-          dataUrl = await domToSvg(previewRef.current, exportOptions);
-          break;
-        default:
-          throw new Error(`Unsupported format: ${downloadConfig.format}`);
+      const exportFn =
+        exportFunctions[downloadConfig.format as keyof typeof exportFunctions];
+      if (!exportFn) {
+        throw new Error(`Unsupported format: ${downloadConfig.format}`);
       }
+
+      const dataUrl = await exportFn(previewRef.current, exportOptions);
 
       // Create and trigger download
       const link = document.createElement("a");
@@ -172,138 +186,124 @@ export default function DownloadDialog() {
     }
   };
 
-  const handleDimensionModeChange = (newMode: DimensionMode) => {
-    let newDimensions = {
-      width: downloadConfig.width,
-      height: downloadConfig.height,
-    };
-    const updates: Partial<DownloadConfig> = { dimensionMode: newMode };
+  const handleDimensionModeChange = useCallback(
+    (newMode: DimensionMode) => {
+      const updates: Partial<DownloadConfig> = { dimensionMode: newMode };
+      const preset = dimensionPresets.find(
+        (p) => p.key === downloadConfig.preset,
+      );
 
-    const preset = dimensionPresets.find(
-      (p) => p.key === downloadConfig.preset,
-    );
+      switch (newMode) {
+        case "viewport":
+          Object.assign(updates, {
+            width: browserWidth,
+            height: browserHeight,
+          });
+          break;
+        case "original":
+          Object.assign(updates, {
+            width: originalImageSize.width || 1200,
+            height: originalImageSize.height || 800,
+          });
+          break;
+        case "preset":
+          if (preset) {
+            Object.assign(updates, {
+              width: preset.width,
+              height: preset.height,
+            });
+          }
+          break;
+        case "aspect-ratio":
+          if (!downloadConfig.aspectRatio) {
+            updates.aspectRatio = "landscape";
+          }
+          if (downloadConfig.width <= 0 && downloadConfig.height <= 0) {
+            Object.assign(updates, { width: 1920, height: 0 });
+          }
+          break;
+      }
 
-    switch (newMode) {
-      case "viewport":
-        newDimensions = { width: browserWidth, height: browserHeight };
-        break;
-      case "original":
-        newDimensions = {
-          width: originalImageSize.width || 1200,
-          height: originalImageSize.height || 800,
-        };
-        break;
-      case "preset":
-        if (preset) {
-          newDimensions = { width: preset.width, height: preset.height };
-        }
-        break;
-      case "aspect-ratio":
-        // Set default aspect ratio if not already set
-        if (!downloadConfig.aspectRatio) {
-          updates.aspectRatio = "landscape";
-        }
-        // Set a default width if both dimensions are 0
-        if (downloadConfig.width <= 0 && downloadConfig.height <= 0) {
-          newDimensions = { width: 1920, height: 0 }; // Will be calculated based on ratio
-        }
-        break;
-      // For custom, keep current dimensions
-    }
+      updateConfig(updates);
+    },
+    [
+      downloadConfig,
+      browserWidth,
+      browserHeight,
+      originalImageSize,
+      updateConfig,
+    ],
+  );
 
-    setDownloadConfig({
-      ...downloadConfig,
-      ...updates,
-      ...newDimensions,
-    });
-  };
+  const handlePresetChange = useCallback(
+    (presetKey: DimensionPreset) => {
+      const preset = dimensionPresets.find((p) => p.key === presetKey);
+      if (preset) {
+        updateConfig({
+          preset: presetKey,
+          width: preset.width,
+          height: preset.height,
+        });
+      }
+    },
+    [updateConfig],
+  );
 
-  const handlePresetChange = (presetKey: DimensionPreset) => {
-    const preset = dimensionPresets.find((p) => p.key === presetKey);
-    if (preset) {
-      setDownloadConfig({
-        ...downloadConfig,
-        preset: presetKey,
-        width: preset.width,
-        height: preset.height,
+  const updateFilename = useCallback(
+    (newFilename: string) => {
+      const sanitized = newFilename
+        .replace(/[<>:"/\\|?*]/g, "")
+        .substring(0, 255);
+      updateConfig({ filename: sanitized });
+    },
+    [updateConfig],
+  );
+
+  const handleAspectRatioChange = useCallback(
+    (newRatio: AspectRatio) => {
+      const dimensions = calculateAspectRatioDimensions(
+        newRatio,
+        downloadConfig.width,
+        downloadConfig.height,
+      );
+
+      updateConfig({
+        aspectRatio: newRatio,
+        ...dimensions,
       });
-    }
-  };
+    },
+    [
+      downloadConfig.width,
+      downloadConfig.height,
+      calculateAspectRatioDimensions,
+      updateConfig,
+    ],
+  );
 
-  const updateFilename = (newFilename: string) => {
-    // Sanitize filename and limit length
-    const sanitized = newFilename
-      .replace(/[<>:"/\\|?*]/g, "")
-      .substring(0, 255);
+  const handleAspectRatioDimensionChange = useCallback(
+    (field: "width" | "height", value: number) => {
+      if (!downloadConfig.aspectRatio) {
+        updateConfig({ [field]: value });
+        return;
+      }
 
-    setDownloadConfig({
-      ...downloadConfig,
-      filename: sanitized,
-    });
-  };
+      const ratio = downloadAspectRatios[downloadConfig.aspectRatio].ratio;
+      const dimensions =
+        field === "width"
+          ? { width: value, height: Math.round(value / ratio) }
+          : { width: Math.round(value * ratio), height: value };
 
-  const handleAspectRatioChange = (newRatio: AspectRatio) => {
-    const newAspectRatio = downloadAspectRatios[newRatio];
-    const ratio = newAspectRatio.ratio;
+      updateConfig(dimensions);
+    },
+    [downloadConfig.aspectRatio, updateConfig],
+  );
 
-    // Keep the current dimensions as starting point
-    let newWidth = downloadConfig.width;
-    let newHeight = downloadConfig.height;
-
-    // If we have a valid width, recalculate height
-    if (newWidth > 0) {
-      newHeight = Math.round(newWidth / ratio);
-    }
-    // If we don't have a valid width but have height, recalculate width
-    else if (newHeight > 0) {
-      newWidth = Math.round(newHeight * ratio);
-    }
-    // If neither dimension is set, use a default width and calculate height
-    else {
-      newWidth = 1920; // Default width
-      newHeight = Math.round(newWidth / ratio);
-    }
-
-    setDownloadConfig({
-      ...downloadConfig,
-      aspectRatio: newRatio,
-      width: newWidth,
-      height: newHeight,
-    });
-  };
-
-  const handleAspectRatioDimensionChange = (
-    field: "width" | "height",
-    value: number,
-  ) => {
-    const aspectRatio = downloadConfig.aspectRatio
-      ? downloadAspectRatios[downloadConfig.aspectRatio]
-      : null;
-
-    if (!aspectRatio) {
-      setDownloadConfig({
-        ...downloadConfig,
-        [field]: value,
-      });
-      return;
-    }
-
-    const ratio = aspectRatio.ratio;
-    let newWidth = value;
-    let newHeight = value;
-
-    if (field === "width") {
-      newHeight = Math.round(value / ratio);
-    } else {
-      newWidth = Math.round(value * ratio);
-    }
-
-    setDownloadConfig({
-      ...downloadConfig,
-      width: newWidth,
-      height: newHeight,
-    });
-  };
+  // Get current file format config
+  const currentFileFormat = useMemo(
+    () =>
+      supportedDownloadFormats.find((f) => f.name === downloadConfig.format),
+    [downloadConfig.format],
+  );
 
   return (
     <Dialog>
@@ -313,7 +313,6 @@ export default function DownloadDialog() {
           type="button"
         >
           <span>Download</span>
-          {/* ICON */}
         </button>
       </DialogTrigger>
       <DialogContent className="w-[80vw]">
@@ -333,23 +332,20 @@ export default function DownloadDialog() {
               {exportDimensions.height} px
               <br />
               <strong>Format:</strong> {downloadConfig.format.toUpperCase()}
-              {supportedDownloadFormats.find(
-                (f) => f.name === downloadConfig.format,
-              )?.quality && <span> • Quality: {downloadConfig.quality}%</span>}
+              {currentFileFormat?.quality && (
+                <span> • Quality: {downloadConfig.quality}%</span>
+              )}
             </div>
           </div>
           <div className="max-h-[60vh] min-h-full overflow-y-auto pr-4">
             <div className="flex w-full flex-col gap-4 pb-8">
+              {/* File Format Selection */}
               <div>
                 <label htmlFor="fileformat">File format</label>
-
                 <Select
                   value={downloadConfig.format}
-                  onValueChange={(value) =>
-                    setDownloadConfig({
-                      ...downloadConfig,
-                      format: value as FileFormat,
-                    })
+                  onValueChange={(value: FileFormat) =>
+                    updateConfig({ format: value })
                   }
                 >
                   <SelectTrigger id="fileformat" className="mt-4 w-full">
@@ -373,9 +369,9 @@ export default function DownloadDialog() {
                   </SelectContent>
                 </Select>
               </div>
-              {supportedDownloadFormats.find(
-                (f) => f.name === downloadConfig.format,
-              )?.quality && (
+
+              {/* Quality Slider */}
+              {currentFileFormat?.quality && (
                 <div>
                   <label
                     htmlFor="quality"
@@ -390,16 +386,15 @@ export default function DownloadDialog() {
                     max="100"
                     step="5"
                     value={downloadConfig.quality}
-                    onChange={(e) => {
-                      setDownloadConfig({
-                        ...downloadConfig,
-                        quality: parseInt(e.target.value),
-                      });
-                    }}
+                    onChange={(e) =>
+                      updateConfig({ quality: parseInt(e.target.value) })
+                    }
                     className="w-full"
                   />
                 </div>
               )}
+
+              {/* Filename Input */}
               <div>
                 <label htmlFor="filename">Filename</label>
                 <div className="relative mt-4 inline-flex w-full items-center">
@@ -417,9 +412,10 @@ export default function DownloadDialog() {
                   </small>
                 </div>
               </div>
+
+              {/* Dimension Mode Selection */}
               <div>
                 <label htmlFor="dimensionMode">Dimension Mode</label>
-
                 <Select
                   value={downloadConfig.dimensionMode}
                   onValueChange={handleDimensionModeChange}
@@ -443,52 +439,46 @@ export default function DownloadDialog() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Custom Dimensions */}
               {downloadConfig.dimensionMode === "custom" && (
                 <div className="grid w-full grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="customWidth">Width</label>
-                    <Input
-                      className="mt-4"
-                      id="customWidth"
-                      type="number"
-                      min={16}
-                      max={5000}
-                      placeholder="Width in pixels"
-                      inputMode="numeric"
-                      value={downloadConfig.width}
-                      onChange={(e) => {
-                        setDownloadConfig({
-                          ...downloadConfig,
-                          width: parseInt(e.target.value) || 0,
-                        });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="customHeight">Height</label>
-                    <Input
-                      className="mt-4"
-                      id="customHeight"
-                      type="number"
-                      min={16}
-                      max={5000}
-                      placeholder="Height in pixels"
-                      inputMode="numeric"
-                      value={downloadConfig.height}
-                      onChange={(e) => {
-                        setDownloadConfig({
-                          ...downloadConfig,
-                          height: parseInt(e.target.value) || 0,
-                        });
-                      }}
-                    />
-                  </div>
+                  {["width", "height"].map((field) => (
+                    <div key={field}>
+                      <label htmlFor={`custom${capitalizeFirstLetter(field)}`}>
+                        {capitalizeFirstLetter(field)}
+                      </label>
+                      <Input
+                        className="mt-4"
+                        id={`custom${capitalizeFirstLetter(field)}`}
+                        type="number"
+                        min={16}
+                        max={5000}
+                        placeholder={`${capitalizeFirstLetter(field)} in pixels`}
+                        inputMode="numeric"
+                        value={
+                          downloadConfig[
+                            field as keyof Pick<
+                              DownloadConfig,
+                              "width" | "height"
+                            >
+                          ]
+                        }
+                        onChange={(e) =>
+                          updateConfig({
+                            [field]: parseInt(e.target.value) || 0,
+                          })
+                        }
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
+
+              {/* Preset Selection */}
               {downloadConfig.dimensionMode === "preset" && (
                 <div>
                   <label htmlFor="preset">Preset</label>
-
                   <Select
                     value={downloadConfig.preset}
                     onValueChange={handlePresetChange}
@@ -515,6 +505,8 @@ export default function DownloadDialog() {
                   </Select>
                 </div>
               )}
+
+              {/* Aspect Ratio Controls */}
               {downloadConfig.dimensionMode === "aspect-ratio" && (
                 <>
                   <div>
@@ -557,50 +549,41 @@ export default function DownloadDialog() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="aspectWidth"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Width <small>(primary)</small>
-                      </label>
-                      <Input
-                        id="aspectWidth"
-                        type="number"
-                        min={16}
-                        max={5000}
-                        placeholder="Width in pixels"
-                        value={downloadConfig.width}
-                        onChange={(e) => {
-                          handleAspectRatioDimensionChange(
-                            "width",
-                            parseInt(e.target.value) || 0,
-                          );
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="aspectHeight"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Height <small>(or primary)</small>
-                      </label>
-                      <Input
-                        id="aspectHeight"
-                        type="number"
-                        min={16}
-                        max={5000}
-                        placeholder="Height in pixels"
-                        value={downloadConfig.height}
-                        onChange={(e) => {
-                          handleAspectRatioDimensionChange(
-                            "height",
-                            parseInt(e.target.value) || 0,
-                          );
-                        }}
-                      />
-                    </div>
+                    {[
+                      {
+                        field: "width" as const,
+                        label: "Width",
+                        subtitle: "(primary)",
+                      },
+                      {
+                        field: "height" as const,
+                        label: "Height",
+                        subtitle: "",
+                      },
+                    ].map(({ field, label, subtitle }) => (
+                      <div key={field}>
+                        <label
+                          htmlFor={`aspect${capitalizeFirstLetter(field)}`}
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          {label} <small>{subtitle}</small>
+                        </label>
+                        <Input
+                          id={`aspect${capitalizeFirstLetter(field)}`}
+                          type="number"
+                          min={16}
+                          max={5000}
+                          placeholder={`${label} in pixels`}
+                          value={downloadConfig[field]}
+                          onChange={(e) =>
+                            handleAspectRatioDimensionChange(
+                              field,
+                              parseInt(e.target.value) || 0,
+                            )
+                          }
+                        />
+                      </div>
+                    ))}
                   </div>
                   <small className="text-gray-500">
                     Set either width or height - the other will be calculated
