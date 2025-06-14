@@ -53,7 +53,7 @@ export default function GradientPanel() {
 
   if (image.length === 0 || !palette) {
     return (
-      <div className="border-gradie-2 flex size-full flex-col items-center gap-4 rounded-lg border border-solid py-4">
+      <div className="border-gradie-2 flex size-full flex-1 flex-col items-center gap-4 rounded-lg border border-solid py-4">
         Upload an image!
       </div>
     );
