@@ -43,6 +43,7 @@ import { capitalizeFirstLetter } from "@/utils";
 import GradientPreview from "./gradient-preview";
 import { toast } from "sonner";
 import { usePostHog } from "posthog-js/react";
+import { cn } from "@/lib/utils";
 
 export default function DownloadDialog() {
   const posthog = usePostHog();
@@ -319,17 +320,39 @@ export default function DownloadDialog() {
     [downloadConfig.format],
   );
 
+  const quality = currentFileFormat?.quality
+    ? `${downloadConfig.quality}%`
+    : "N/A";
+
+  const exportOptionsFieldArray = [
+    {
+      id: "filename",
+      title: "Filename",
+      value: `${downloadConfig.filename}.${downloadConfig.format}`,
+    },
+    {
+      id: "size",
+      title: "Export Size",
+      value: `${exportDimensions.width} × ${exportDimensions.height}px`,
+    },
+    {
+      id: "quality",
+      title: "Quality",
+      value: quality,
+    },
+  ];
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <button
-          className="border-gradie-2 bg-gradie-2 flex-1 cursor-pointer rounded-lg border border-solid px-4 py-2 font-bold text-white"
+          className="border-gradie-2 bg-gradie-2 w-full flex-1 cursor-pointer rounded-lg border border-solid px-4 py-2 font-bold text-white"
           type="button"
         >
           <span>Download</span>
         </button>
       </DialogTrigger>
-      <DialogContent className="w-[80vw]">
+      <DialogContent className="min-h-screen w-screen md:w-[80vw]">
         <DialogHeader>
           <DialogTitle className="text-3xl font-semibold">
             Download gradient
@@ -338,20 +361,15 @@ export default function DownloadDialog() {
             Gradient Download Dialog
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-8">
-          <div className="flex h-full w-full flex-col justify-between">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8">
+          <div className="flex h-full w-full flex-col justify-between gap-6">
             <GradientPreview ref={previewRef} gradient={gradientString} />
-            <div className="rounded bg-gray-50 p-3 text-sm text-gray-600">
-              <strong>Export size:</strong> {exportDimensions.width} ×{" "}
-              {exportDimensions.height} px
-              <br />
-              <strong>Format:</strong> {downloadConfig.format.toUpperCase()}
-              {currentFileFormat?.quality && (
-                <span> • Quality: {downloadConfig.quality}%</span>
-              )}
-            </div>
+            <ExportOptionsField
+              content={exportOptionsFieldArray}
+              className="flex-1"
+            />
           </div>
-          <div className="max-h-[60vh] min-h-full overflow-y-auto pr-4">
+          <div className="min-h-full pr-4 md:max-h-[60vh] md:overflow-y-auto">
             <div className="flex w-full flex-col gap-4 pb-8">
               {/* File Format Selection */}
               <div>
@@ -608,11 +626,11 @@ export default function DownloadDialog() {
             </div>
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex items-center gap-4">
           <DialogClose asChild>
             <Button
               variant="destructive"
-              className="mr-4 cursor-pointer px-8 py-4"
+              className="w-full flex-1 cursor-pointer px-8 py-4 md:flex-0"
               type="button"
               disabled={isDownloading}
             >
@@ -620,7 +638,7 @@ export default function DownloadDialog() {
             </Button>
           </DialogClose>
           <Button
-            className="cursor-pointer px-8 py-4"
+            className="w-full flex-1 cursor-pointer px-8 py-4 md:flex-0"
             type="button"
             onClick={handleDownload}
             disabled={isDownloading}
@@ -630,5 +648,35 @@ export default function DownloadDialog() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ExportOptionsField({
+  content,
+  className,
+}: {
+  content: {
+    id: string;
+    title: string;
+    value: string;
+  }[];
+  className?: string;
+}) {
+  return (
+    <div className={cn("flow-root w-full", className)}>
+      <dl className="md:divide-gradie-2 -my-3 flex w-full flex-row justify-between text-sm md:block md:divide-y">
+        {content.map((datum) => (
+          <div
+            key={datum.id}
+            className="grid grid-cols-1 gap-1 py-3 md:grid-cols-3 md:gap-4"
+          >
+            <dt className="font-medium text-gray-900">{datum.title}</dt>
+            <dd className="break-words text-gray-700 md:col-span-2">
+              {datum.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
