@@ -10,7 +10,7 @@ export default function PaletteContainer({
 }) {
   return (
     <>
-      <div className="flex w-full justify-between gap-x-8 rounded-lg">
+      <div className="flex w-full flex-col justify-between gap-y-4 rounded-lg md:flex-row md:gap-x-8">
         {palette?.map((paletteColor) => (
           <button
             type="button"
@@ -19,11 +19,11 @@ export default function PaletteContainer({
             onClick={() => copyToClipboard(`${paletteColor}`, "Color copied!")}
           >
             <span
-              className="size-20 rounded-xl"
+              className="shadow-gradie-2 h-20 w-[100%] rounded md:size-20 md:rounded-xl"
               style={{ background: `${paletteColor}` }}
               key={`${paletteColor}`}
             />
-            <small className="w-full max-w-20 py-2 text-center text-xs text-pretty whitespace-normal text-black">
+            <small className="w-full py-2 text-center text-base text-pretty whitespace-normal text-black md:max-w-20 md:text-xs">
               {paletteColor}
             </small>
           </button>
