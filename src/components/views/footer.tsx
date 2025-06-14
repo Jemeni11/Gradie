@@ -11,7 +11,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="my-12 flex items-center justify-between py-7">
+    <footer className="my-12 flex flex-col items-center justify-between gap-10 py-7 lg:flex-row lg:gap-0">
       <div>
         <span className="text-sm font-light 2xl:text-2xl">
           Designed and Developed by{" "}
@@ -25,7 +25,7 @@ export default function Footer() {
           </a>
         </span>
       </div>
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-6 lg:gap-x-4">
         <a
           href="https://www.buymeacoffee.com/jemeni11"
           target="_blank"
@@ -41,7 +41,7 @@ export default function Footer() {
           <GitHubSponsorsIcon />
         </a>
       </div>
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-6 lg:gap-x-4">
         <a
           href="https://github.com/Jemeni11/"
           target="_blank"
