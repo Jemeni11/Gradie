@@ -1,17 +1,41 @@
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { Header, Hero, GradientPanel, Wiki, Footer } from "@/components/views";
 import ImageUploadInput from "@/components/image-upload-input";
+import Banner from "@/components/views/banner";
 import { usePostHog } from "posthog-js/react";
 
 export default function App() {
   const posthog = usePostHog();
+  const [showBanner, setShowBanner] = useState(false);
 
-  posthog?.opt_in_capturing();
+  useEffect(() => {
+    const analyticsConsent = localStorage.getItem("gradie-analytics-consent");
+    if (analyticsConsent === "true") {
+      posthog?.opt_in_capturing();
+    } else if (analyticsConsent === null) {
+      // Show banner only if user hasn’t decided
+      setShowBanner(true);
+    }
+  }, [posthog]);
+
+  const handleEnableAnalytics = () => {
+    localStorage.setItem("gradie-analytics-consent", "true");
+    posthog?.opt_in_capturing();
+    setShowBanner(false);
+  };
+
+  const handleDismiss = () => {
+    localStorage.setItem("gradie-analytics-consent", "false");
+    setShowBanner(false);
+  };
 
   return (
     <>
       <Toaster richColors closeButton />
-
+      {showBanner && (
+        <Banner onEnable={handleEnableAnalytics} onDismiss={handleDismiss} />
+      )}
       <div className="mx-auto w-full max-w-7xl px-4 md:px-8 lg:h-screen">
         <Header />
         <Hero />
