@@ -202,6 +202,25 @@
     -webkit-text-fill-color: transparent;
   }
 
+  .custom-marker-list li {
+    @apply relative pl-6;
+  }
+
+  .custom-marker-list li::before {
+    content: "";
+
+    position: absolute;
+    top: 0.35em;
+    left: 0;
+
+    width: 1em;
+    height: 1em;
+
+    background-image: url("/favicon-16x16.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
   @keyframes float {
     0%,
     100% {
