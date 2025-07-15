@@ -206,6 +206,7 @@ export default function DownloadDialog() {
 
       posthog?.capture("download_successful", {
         format: fileFormatConfig?.name,
+        enhanced_gradient: useEnhancedGradient,
       });
     } catch (error) {
       console.error("Download failed:", error);
@@ -396,9 +397,12 @@ export default function DownloadDialog() {
                 <Switch
                   id="enhanced-gradient"
                   checked={useEnhancedGradient}
-                  onCheckedChange={(checked) =>
-                    setUseEnhancedGradient(!!checked)
-                  }
+                  onCheckedChange={(checked) => {
+                    setUseEnhancedGradient(!!checked);
+                    posthog?.capture("enhanced_gradient_toggled", {
+                      enabled: checked,
+                    });
+                  }}
                 />
                 <label
                   htmlFor="enhanced-gradient"
