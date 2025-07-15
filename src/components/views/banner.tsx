@@ -8,29 +8,33 @@ export default function Banner({
   onDismiss: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-gray-200 bg-gray-100 px-4 py-2 text-gray-900">
-      <p className="w-full text-center font-medium">
-        Gradie can collect anonymous usage data to help improve the app but it's
+    <div className="border-border bg-muted text-muted-foreground relative isolate flex flex-wrap items-center justify-between gap-2 border px-4 py-3 text-sm shadow-sm">
+      <p className="w-full text-center md:w-auto">
+        Gradie can collect anonymous usage data to help improve the app. It’s
         off by default.{" "}
-        <a href="#" className="inline-block underline">
+        <a
+          href="#"
+          className="hover:text-foreground font-medium underline underline-offset-4"
+        >
           Learn more
         </a>
       </p>
 
       <div className="flex items-center gap-2">
         <button
+          onClick={onEnable}
           type="button"
           aria-label="Enable anonymous analytics"
-          onClick={onEnable}
-          className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex cursor-pointer items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium shadow-sm transition-colors"
         >
           Enable
         </button>
+
         <button
-          type="button"
-          aria-label="Dismiss"
           onClick={onDismiss}
-          className="rounded border border-gray-300 bg-white p-1.5 shadow-sm transition-colors hover:bg-gray-50"
+          type="button"
+          aria-label="Dismiss banner"
+          className="border-border bg-background hover:bg-muted inline-flex cursor-pointer items-center justify-center rounded-md border p-1.5"
         >
           <Close />
         </button>
