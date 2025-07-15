@@ -19,7 +19,7 @@ export default function PaletteContainer({
             onClick={() => copyToClipboard(`${paletteColor}`, "Color copied!")}
           >
             <span
-              className="shadow-gradie-2 h-20 w-[100%] rounded md:size-20 md:rounded-xl"
+              className="shadow-gradie-2 h-20 w-[100%] rounded min-[900px]:size-14 md:size-10 md:rounded-xl lg:size-20"
               style={{ background: `${paletteColor}` }}
               key={`${paletteColor}`}
             />
