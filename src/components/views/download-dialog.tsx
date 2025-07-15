@@ -5,6 +5,7 @@ import {
   gradientStringAtom,
   originalImageSizeAtom,
   downloadConfigAtom,
+  colorFormatAtom,
 } from "@/store";
 import {
   Dialog,
@@ -44,6 +45,10 @@ import GradientPreview from "./gradient-preview";
 import { toast } from "sonner";
 import { usePostHog } from "posthog-js/react";
 import { cn } from "@/lib/utils";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+
+import createSteppedGradient from "@/utils/colorBandingFix";
 
 export default function DownloadDialog() {
   const posthog = usePostHog();
@@ -55,6 +60,10 @@ export default function DownloadDialog() {
   const [downloadConfig, setDownloadConfig] = useAtom(downloadConfigAtom);
   const originalImageSize = useAtomValue(originalImageSizeAtom);
   const { height: browserHeight, width: browserWidth } = useWindowSize();
+
+  const colorFormat = useAtomValue(colorFormatAtom);
+
+  const [useEnhancedGradient, setUseEnhancedGradient] = useState(false);
 
   // Helper to calculate dimensions based on aspect ratio
   const calculateAspectRatioDimensions = useCallback(
@@ -142,6 +151,19 @@ export default function DownloadDialog() {
     setIsDownloading(true);
 
     try {
+      console.log(previewRef.current.style.background);
+
+      // Apply the stepped gradient to reduce banding
+      previewRef.current.style.background = useEnhancedGradient
+        ? createSteppedGradient(gradientString, colorFormat)
+        : gradientString;
+
+      console.log(colorFormat);
+      console.log(previewRef.current.style.background);
+
+      // Small delay to ensure the DOM has updated with the new gradient
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       const fileFormatConfig = supportedDownloadFormats.find(
         (f) => f.name === downloadConfig.format,
       );
@@ -165,6 +187,7 @@ export default function DownloadDialog() {
       const exportFn =
         exportFunctions[downloadConfig.format as keyof typeof exportFunctions];
       if (!exportFn) {
+        toast.error(`Unsupported format: ${downloadConfig.format}`);
         throw new Error(`Unsupported format: ${downloadConfig.format}`);
       }
 
@@ -352,7 +375,7 @@ export default function DownloadDialog() {
           <span>Download</span>
         </button>
       </DialogTrigger>
-      <DialogContent className="min-h-screen w-screen md:w-[80vw]">
+      <DialogContent className="h-full max-h-[80%] w-screen overflow-y-scroll md:max-h-auto md:min-h-screen md:w-[80vw] md:overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-3xl font-semibold">
             Download gradient
@@ -368,8 +391,32 @@ export default function DownloadDialog() {
               content={exportOptionsFieldArray}
               className="flex-1"
             />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 py-1">
+                <Switch
+                  id="enhanced-gradient"
+                  checked={useEnhancedGradient}
+                  onCheckedChange={(checked) =>
+                    setUseEnhancedGradient(!!checked)
+                  }
+                />
+                <label
+                  htmlFor="enhanced-gradient"
+                  className="text-sm leading-none"
+                >
+                  Use enhanced gradient (experimental)
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch className="invisible" />
+                <small className="text-gray-500">
+                  Attempts to reduce color banding. Not always necessary, and
+                  results may vary. Try downloading without it first.
+                </small>
+              </div>
+            </div>
           </div>
-          <div className="min-h-full pr-4 md:max-h-[60vh] md:overflow-y-auto">
+          <div className="min-h-full px-4 md:max-h-[60vh] md:overflow-y-auto">
             <div className="flex w-full flex-col gap-4 pb-8">
               {/* File Format Selection */}
               <div>
@@ -405,23 +452,19 @@ export default function DownloadDialog() {
               {/* Quality Slider */}
               {currentFileFormat?.quality && (
                 <div>
-                  <label
-                    htmlFor="quality"
-                    className="mb-2 block text-sm font-medium"
-                  >
+                  <label htmlFor="quality">
                     Quality: {downloadConfig.quality}%
                   </label>
-                  <Input
-                    id="quality"
-                    type="range"
-                    min="10"
-                    max="100"
-                    step="5"
-                    value={downloadConfig.quality}
-                    onChange={(e) =>
-                      updateConfig({ quality: parseInt(e.target.value) })
+                  <Slider
+                    value={[downloadConfig.quality]}
+                    onValueChange={(values) =>
+                      updateConfig({ quality: values[0] })
                     }
-                    className="w-full"
+                    min={10}
+                    max={100}
+                    step={5}
+                    className="mt-4 w-full"
+                    id="quality"
                   />
                 </div>
               )}
