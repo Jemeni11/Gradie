@@ -1,22 +1,22 @@
 import { Toaster } from "@/components/ui/sonner";
-import {
-  Header,
-  Hero,
-  PalettePanel,
-  GradientPanel,
-  Wiki,
-  Footer,
-} from "./components/views";
+import { Header, Hero, GradientPanel, Wiki, Footer } from "@/components/views";
+import ImageUploadInput from "@/components/image-upload-input";
+import { usePostHog } from "posthog-js/react";
 
 export default function App() {
+  const posthog = usePostHog();
+
+  posthog?.opt_in_capturing();
+
   return (
     <>
-      <Toaster richColors />
-      <div className="mx-auto w-full max-w-7xl px-8 lg:h-screen">
+      <Toaster richColors closeButton />
+
+      <div className="mx-auto w-full max-w-7xl px-4 md:px-8 lg:h-screen">
         <Header />
         <Hero />
-        <div className="grid grid-rows-2 gap-4 lg:grid-cols-[5fr_5fr] lg:grid-rows-1">
-          <PalettePanel />
+        <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2">
+          <ImageUploadInput className="aspect-video w-full" />
           <GradientPanel />
         </div>
         <Wiki />
