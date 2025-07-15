@@ -68,7 +68,8 @@ export default function Banner({
                   </ul>
                   <p>
                     That's it. I don't know who you are, and I don't want to.
-                    You're not the droid I'm looking for. 👋
+                    You're not the droid I'm looking for.{" "}
+                    <span className="wave-pulse">👋</span>
                   </p>
                 </div>
 
