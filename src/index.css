@@ -221,6 +221,70 @@
     background-size: contain;
   }
 
+  .wave-pulse {
+    transform-origin: 70% 70%;
+    display: inline-block;
+    animation:
+      wave 2s infinite ease-in-out,
+      pulse-fade 2s infinite ease-in-out;
+  }
+
+  .animate-float {
+    animation: float 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wave-pulse {
+      animation-duration: 8s !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+
+  @keyframes wave {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    10% {
+      transform: rotate(14deg);
+    }
+
+    20% {
+      transform: rotate(-8deg);
+    }
+
+    30% {
+      transform: rotate(14deg);
+    }
+
+    40% {
+      transform: rotate(-4deg);
+    }
+
+    50% {
+      transform: rotate(10deg);
+    }
+
+    60% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes pulse-fade {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.4;
+    }
+  }
+
   @keyframes float {
     0%,
     100% {
@@ -230,9 +294,5 @@
     50% {
       transform: translateY(-8px);
     }
-  }
-
-  .animate-float {
-    animation: float 2s ease-in-out infinite;
   }
 }
