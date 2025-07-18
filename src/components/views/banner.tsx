@@ -19,8 +19,8 @@ export default function Banner({
   onDismiss: () => void;
 }) {
   return (
-    <div className="border-border bg-muted text-muted-foreground relative isolate border px-4 py-3 text-sm shadow-sm">
-      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-2 px-4 md:px-8">
+    <div className="border-border bg-muted text-muted-foreground relative isolate border py-3 text-sm shadow-sm">
+      <div className="mx-auto flex w-full max-w-7xl flex-col flex-wrap items-center justify-between gap-4 px-4 py-2 md:flex-row md:gap-2 md:px-8 md:py-0">
         <p className="w-full text-center md:w-auto">
           Gradie can collect anonymous usage data to help improve the app. It's
           off by default.{" "}
