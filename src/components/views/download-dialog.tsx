@@ -398,7 +398,7 @@ export default function DownloadDialog() {
                   id="enhanced-gradient"
                   checked={useEnhancedGradient}
                   onCheckedChange={(checked) => {
-                    setUseEnhancedGradient(!!checked);
+                    setUseEnhancedGradient(checked);
                     posthog?.capture("enhanced_gradient_toggled", {
                       enabled: checked,
                     });
