@@ -47,9 +47,7 @@ export default function App() {
         <div className="mt-8">
           TODO
           <ul className="custom-marker-list space-y-1">
-            <li>add wiki/faq</li>
             <li>update ui of uploader</li>
-            <li>mobile responsiveness</li>
             <li>???</li>
             <li>profit (lol)</li>
           </ul>
