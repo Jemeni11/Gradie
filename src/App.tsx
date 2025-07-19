@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import { Header, Hero, GradientPanel, Wiki, Footer } from "@/components/views";
+import { Header, Hero, GradientPanel, FAQ, Footer } from "@/components/views";
 import ImageUploadInput from "@/components/image-upload-input";
 import Banner from "@/components/views/banner";
 import { usePostHog } from "posthog-js/react";
@@ -43,14 +43,12 @@ export default function App() {
           <ImageUploadInput className="aspect-video w-full" />
           <GradientPanel />
         </div>
-        <Wiki />
+        <FAQ />
         <div className="mt-8">
           TODO
-          <ul>
-            <li>Bug: fix colour banding on certain linear gradients</li>
+          <ul className="custom-marker-list space-y-1">
             <li>add wiki/faq</li>
             <li>update ui of uploader</li>
-            <li>analytics</li>
             <li>mobile responsiveness</li>
             <li>???</li>
             <li>profit (lol)</li>
