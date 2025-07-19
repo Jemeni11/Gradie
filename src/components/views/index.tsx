@@ -5,6 +5,11 @@ import GradientArea from "./gradient-area";
 import FAQ from "./faq";
 import Footer from "./footer";
 import AnalyticsDialogContent from "./analytics-dialog-content";
+import Banner from "./banner";
+import Code from "./code";
+import DownloadDialog from "./download-dialog";
+import GradientPreview from "./gradient-preview";
+import Loader from "./loader";
 
 export {
   Header,
@@ -14,4 +19,9 @@ export {
   FAQ,
   Footer,
   AnalyticsDialogContent,
+  Banner,
+  Code,
+  DownloadDialog,
+  GradientPreview,
+  Loader,
 };
