@@ -71,7 +71,7 @@ Gradie supports several modes for generating gradients from your image. Each one
 | **Default**      | Most prominent color + second-most prominent.                                                                          |
 | **Surprise Me!** | Most prominent color + a random pick from the rest of the palette.                                                     |
 | **Bold Pop**     | Most prominent color + the most visually contrasting color in the palette. Great for high-impact, energetic gradients. |
-| **Soft Sweep**   | Most prominent color + the palette color with the most different hue. Creates a warm-to-cool or cool-to-warm effect.   |
+| **Soft Sweep**   | Most prominent color + the palette color with the most different hue.                                                  |
 | **Full Blend**   | Uses all five palette colors to create a multi-stop gradient.                                                          |
 | **Custom**       | You choose any two colors from the extracted palette to create your own combo.                                         |
 
