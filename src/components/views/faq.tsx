@@ -6,11 +6,23 @@ import { LinkIcon } from "@/icons";
 export default function FAQ() {
   return (
     <section className="mt-16 mb-8">
-      <hr />
+      <div className="inline-flex w-full items-center gap-4">
+        <img
+          src="/logo-spread-out.png"
+          className="hidden w-32 sm:block xl:w-3xs"
+        />
+        <div className="via-gradie-2 sm:from-gradie-2 h-1 w-full rounded-[2px] bg-gradient-to-r from-transparent to-transparent" />
+      </div>
       <h2 className="font-aladin mx-auto my-4 w-fit scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
         FAQ
       </h2>
-      <hr />
+      <div className="inline-flex w-full items-center gap-4">
+        <div className="via-gradie-2 sm:to-gradie-2 h-1 w-full rounded-[2px] bg-gradient-to-r from-transparent to-transparent" />
+        <img
+          src="/logo-spread-out.png"
+          className="hidden w-32 sm:block xl:w-3xs"
+        />
+      </div>
       <p className="mx-auto my-8 w-full text-lg leading-7">
         Gradie turned out to be more complicated than I expected. It started as
         a simple idea: Upload an image → extract the dominant colors → generate
@@ -91,10 +103,9 @@ export default function FAQ() {
           </h3>
           <p>
             Gradie lets you interpolate in modern color spaces like{" "}
-            <Code>srgb</Code>, <Code>hsl</Code>, <Code>lab</Code>,{" "}
-            <Code>lch</Code>, <Code>oklab</Code>, and <Code>oklch</Code>. The
-            gradient will update accordingly, and yes — it actually affects the
-            result.
+            <Code>srgb</Code>, <Code>hsl</Code>, <Code>hwb</Code>,{" "}
+            <Code>lab</Code>, <Code>lch</Code>, <Code>oklab</Code>, and{" "}
+            <Code>oklch</Code>.
           </p>
         </div>
 
