@@ -4,7 +4,7 @@ import {
   GitHubIcon,
   LinkedInIcon,
   BlueSkyIcon,
-  XIcon,
+  TwitterIcon,
   HashnodeIcon,
   DevdotToIcon,
 } from "@/icons";
@@ -68,7 +68,7 @@ export default function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <XIcon />
+          <TwitterIcon />
         </a>
         <a
           href="https://jemeni11.hashnode.dev/"
