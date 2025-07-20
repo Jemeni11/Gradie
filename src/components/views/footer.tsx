@@ -19,7 +19,7 @@ export default function Footer() {
             href="https://github.com/Jemeni11/"
             target="_blank"
             rel="noopener noreferrer"
-            className="gradient-text font-aladin text-xl font-extrabold 2xl:mb-1 2xl:text-3xl"
+            className="text-gradie-2 font-aladin cursor-pointer text-xl font-extrabold 2xl:mb-1 2xl:text-3xl"
           >
             Emmanuel C. Jemeni
           </a>
