@@ -12,6 +12,7 @@ type Props = {
   addFiles: (files: File[], uploadMethod: "drag" | "paste" | "file") => void;
   successAnimation: boolean;
   onDragOver?: () => void;
+  className?: string;
 };
 
 export default function ImageUploadDropArea({
@@ -24,6 +25,7 @@ export default function ImageUploadDropArea({
   addFiles,
   successAnimation,
   onDragOver,
+  className,
 }: Props) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -46,6 +48,7 @@ export default function ImageUploadDropArea({
       className={cn(
         "border-gradie-2 relative flex flex-col items-center gap-4 rounded-lg border-2 border-dashed py-4",
         dragIsOver ? "bg-gradie-2" : "bg-transparent",
+        className,
       )}
       onDragOver={(e) => {
         handleDragOver(e);
