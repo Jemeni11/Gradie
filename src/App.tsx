@@ -8,7 +8,7 @@ import {
   FAQ,
   Footer,
 } from "@/components/views";
-import ImageUploadInput from "@/components/image";
+import { ImagePreviewWithPalette } from "@/components/image";
 import Banner from "@/components/views/banner";
 import { usePostHog } from "posthog-js/react";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -100,7 +100,7 @@ export default function App() {
         <Hero />
         {validFile ? (
           <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2">
-            <ImageUploadInput className="aspect-video w-full" />
+            <ImagePreviewWithPalette className="aspect-video w-full" />
             <GradientPanel />
           </div>
         ) : (
