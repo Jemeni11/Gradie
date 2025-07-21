@@ -11,11 +11,8 @@ import {
   downloadConfigAtom,
 } from "@/store";
 import { cn } from "@/lib/utils";
-import { InfoIcon } from "@/icons";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import PaletteContainer from "./palette-container";
 import ImageInfo from "./image-info";
-import ImageUploadDropArea from "./image-upload-drop-area";
 import { usePostHog } from "posthog-js/react";
 
 /**
@@ -25,29 +22,16 @@ import { usePostHog } from "posthog-js/react";
  */
 export default function ImageUploadInput({
   onDrop,
-  onDragOver,
   className,
   ...rest
 }: Readonly<{
   onDrop?: (files: File[]) => void;
-  onDragOver?: () => void;
   className?: string;
 }>) {
   const posthog = usePostHog();
 
-  const {
-    dragIsOver,
-    successAnimation,
-    dropAreaRef,
-    fileInputRef,
-    filesWithError,
-    validFile,
-    handleDragOver,
-    handleDragLeave,
-    handleDrop,
-    handleDeleteClick,
-    addFiles,
-  } = useImageUpload(onDrop);
+  const { successAnimation, filesWithError, validFile, handleDeleteClick } =
+    useImageUpload(onDrop);
 
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -134,47 +118,24 @@ export default function ImageUploadInput({
 
   return (
     <div className={cn("grid", className)} {...rest}>
-      {!validFile ? (
-        <>
-          <ImageUploadDropArea
-            dragIsOver={dragIsOver}
-            dropAreaRef={dropAreaRef}
-            fileInputRef={fileInputRef}
-            handleDragOver={handleDragOver}
-            handleDragLeave={handleDragLeave}
-            handleDrop={handleDrop}
-            addFiles={addFiles}
-            successAnimation={successAnimation}
-            onDragOver={onDragOver}
+      <div className="p-8">
+        <div className="aspect-video w-full rounded-lg">
+          <img
+            ref={imageRef}
+            src={imgSrc === "" ? undefined : imgSrc}
+            alt={validFile?.file.name}
+            className="mx-auto h-full rounded-lg"
           />
-          <Alert className="border-gradie-2 mt-4">
-            <InfoIcon className="size-4 animate-pulse motion-reduce:animate-none" />
-            <AlertTitle>Heads up!</AlertTitle>
-            <AlertDescription>
-              Images only. Only one image will be used.
-            </AlertDescription>
-          </Alert>
-        </>
-      ) : (
-        <div className="p-8">
-          <div className="aspect-video w-full rounded-lg">
-            <img
-              ref={imageRef}
-              src={imgSrc === "" ? undefined : imgSrc}
-              alt={validFile.file.name}
-              className="mx-auto h-full rounded-lg"
-            />
-          </div>
-          {validFile && (
-            <ImageInfo
-              file={validFile}
-              deleteHandler={handleDeleteClick}
-              success={successAnimation}
-            />
-          )}
-          {renderedPalette && <PaletteContainer palette={renderedPalette} />}
         </div>
-      )}
+        {validFile && (
+          <ImageInfo
+            file={validFile}
+            deleteHandler={handleDeleteClick}
+            success={successAnimation}
+          />
+        )}
+        {renderedPalette && <PaletteContainer palette={renderedPalette} />}
+      </div>
 
       <div className="flex flex-col gap-2">
         {filesWithError?.map((file) => (

@@ -24,6 +24,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { InfoIcon } from "@/icons";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import ImageUploadDropArea from "@/components/image-upload-input/image-upload-drop-area";
 
 export default function App() {
   const posthog = usePostHog();
@@ -36,7 +39,18 @@ export default function App() {
 
   const [opacity, setOpacity] = useState(1);
 
-  const { validFile } = useImageUpload();
+  const {
+    dragIsOver,
+    successAnimation,
+    dropAreaRef,
+    fileInputRef,
+    filesWithError,
+    validFile,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    addFiles,
+  } = useImageUpload();
 
   const handleEnableAnalytics = () => {
     localStorage.setItem("gradie-analytics-consent", "true");
@@ -102,22 +116,46 @@ export default function App() {
                     Upload an image
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="h-full max-h-[80%] max-w-xl overflow-y-scroll md:max-h-auto md:min-h-[95%] md:overflow-y-auto">
+                <DialogContent className="md:max-h-auto h-full max-h-[80%] max-w-xl overflow-y-scroll md:min-h-[95%] md:overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Upload an image</DialogTitle>
-                    <DialogDescription>TBD</DialogDescription>
-                  </DialogHeader>
-                  <div className="flex w-full flex-col gap-4 text-sm leading-relaxed">
-                    WIP. BRB.
-                  </div>
-                  <DialogFooter className="mt-4">
-                    <Button
-                      className="inline-flex cursor-pointer items-center gap-2"
-                      type="button"
-                    >
+                    <DialogDescription>
                       <span>Create a vibe</span>
                       <span className="animate-bounce">✨</span>
-                    </Button>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="w-full space-y-4 text-sm">
+                    <ImageUploadDropArea
+                      dragIsOver={dragIsOver}
+                      dropAreaRef={dropAreaRef}
+                      fileInputRef={fileInputRef}
+                      handleDragOver={handleDragOver}
+                      handleDragLeave={handleDragLeave}
+                      handleDrop={handleDrop}
+                      addFiles={addFiles}
+                      successAnimation={successAnimation}
+                      className="max-h-[70%]"
+                    />
+                    <Alert className="border-gradie-2">
+                      <InfoIcon className="size-4 animate-pulse motion-reduce:animate-none" />
+                      <AlertTitle>Heads up!</AlertTitle>
+                      <AlertDescription>
+                        Images only. Only one image will be used.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="flex flex-col gap-2">
+                      {filesWithError?.map((file) => (
+                        <p
+                          key={file.key}
+                          className="text-sm text-red-700"
+                          role="alert"
+                        >
+                          {file.status.map((status) => status + "\n")}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                  <DialogFooter className="mt-4 block md:hidden">
                     <DialogClose asChild>
                       <Button
                         variant="destructive"
