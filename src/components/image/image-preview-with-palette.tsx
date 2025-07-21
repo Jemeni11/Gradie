@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import { useAtomValue, useSetAtom } from "jotai";
 import useColorThief from "@/hooks/useColorThief";
-import { useImageUpload } from "@/hooks/useImageUpload";
 import {
   paletteAtom,
   convertedPaletteAtom,
@@ -14,24 +13,24 @@ import { cn } from "@/lib/utils";
 import PaletteContainer from "./palette-container";
 import ImageInfo from "./image-info";
 import { usePostHog } from "posthog-js/react";
+import { ValidatedFile } from "@/types";
 
 /**
- * The ImageUploadInput component provides a user interface for image uploads.
- * It supports drag-and-drop, file selection through a file input, and clipboard paste.
- * The component is specifically designed for single image uploads for a gradient generator.
+ * The ImagePreviewWithPalette component provides a user interface viewing an uploaded image
  */
 export default function ImagePreviewWithPalette({
-  onDrop,
+  successAnimation,
+  validFile,
+  handleDeleteClick,
   className,
   ...rest
 }: Readonly<{
-  onDrop?: (files: File[]) => void;
+  successAnimation: boolean;
+  validFile: ValidatedFile;
+  handleDeleteClick: () => void;
   className?: string;
 }>) {
   const posthog = usePostHog();
-
-  const { successAnimation, validFile, handleDeleteClick } =
-    useImageUpload(onDrop);
 
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -123,7 +122,7 @@ export default function ImagePreviewWithPalette({
           <img
             ref={imageRef}
             src={imgSrc === "" ? undefined : imgSrc}
-            alt={validFile?.file.name}
+            alt={validFile.file.name}
             className="mx-auto h-full rounded-lg"
           />
         </div>

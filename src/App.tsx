@@ -50,6 +50,7 @@ export default function App() {
     handleDragLeave,
     handleDrop,
     addFiles,
+    handleDeleteClick,
   } = useImageUpload();
 
   const handleEnableAnalytics = () => {
@@ -100,7 +101,12 @@ export default function App() {
         <Hero />
         {validFile ? (
           <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2">
-            <ImagePreviewWithPalette className="aspect-video w-full" />
+            <ImagePreviewWithPalette
+              handleDeleteClick={handleDeleteClick}
+              successAnimation={successAnimation}
+              validFile={validFile}
+              className="aspect-video w-full"
+            />
             <GradientPanel />
           </div>
         ) : (
