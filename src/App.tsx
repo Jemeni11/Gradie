@@ -8,7 +8,7 @@ import {
   FAQ,
   Footer,
 } from "@/components/views";
-import ImageUploadInput from "@/components/image-upload-input";
+import ImageUploadInput from "@/components/image";
 import Banner from "@/components/views/banner";
 import { usePostHog } from "posthog-js/react";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -26,7 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { InfoIcon } from "@/icons";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import ImageUploadDropArea from "@/components/image-upload-input/image-upload-drop-area";
+import ImageUploadDropArea from "@/components/image/image-upload-drop-area";
 
 export default function App() {
   const posthog = usePostHog();
