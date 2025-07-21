@@ -189,14 +189,6 @@ export default function App() {
           </div>
         )}
         <FAQ />
-        <div className="mt-8">
-          TODO
-          <ul className="custom-marker-list space-y-1">
-            <li>update ui of uploader</li>
-            <li>???</li>
-            <li>profit (lol)</li>
-          </ul>
-        </div>
         <Footer />
       </div>
     </>
