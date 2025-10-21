@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export default function AnalyticsDialogContent() {
   return (
-    <DialogContent className="h-full max-h-[80%] max-w-xl overflow-y-scroll md:max-h-auto md:min-h-[95%] md:overflow-y-auto">
+    <DialogContent className="md:max-h-auto h-full max-h-[80%] max-w-xl overflow-y-scroll md:min-h-[95%] md:overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Analytics & Privacy</DialogTitle>
         <DialogDescription>TL;DR? I don't want your data.</DialogDescription>
@@ -42,10 +42,7 @@ export default function AnalyticsDialogContent() {
             <li>What format you downloaded in (PNG, SVG, etc)</li>
             <li>Whether you enabled enhanced gradient mode</li>
           </ul>
-          <p>
-            That's it. I don't know who you are, and I don't want to. You're not
-            the droid I'm looking for. <span className="wave-pulse">👋</span>
-          </p>
+          <p>That's it. I don't know who you are, and I don't want to.</p>
         </div>
 
         <div>
