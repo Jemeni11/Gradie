@@ -9,7 +9,6 @@ import {
   originalImageSizeAtom,
   downloadConfigAtom,
 } from "@/store";
-import { cn } from "@/lib/utils";
 import PaletteContainer from "./palette-container";
 import ImageInfo from "./image-info";
 import { usePostHog } from "posthog-js/react";
@@ -22,13 +21,11 @@ export default function ImagePreviewWithPalette({
   successAnimation,
   validFile,
   handleDeleteClick,
-  className,
   ...rest
 }: Readonly<{
   successAnimation: boolean;
   validFile: ValidatedFile;
   handleDeleteClick: () => void;
-  className?: string;
 }>) {
   const posthog = usePostHog();
 
@@ -116,25 +113,23 @@ export default function ImagePreviewWithPalette({
   const renderedPalette = convertedPalette ?? palette;
 
   return (
-    <div className={cn("grid", className)} {...rest}>
-      <div className="p-8">
-        <div className="aspect-video w-full rounded-lg">
-          <img
-            ref={imageRef}
-            src={imgSrc === "" ? undefined : imgSrc}
-            alt={validFile.file.name}
-            className="mx-auto h-full rounded-lg"
-          />
-        </div>
-        {validFile && (
-          <ImageInfo
-            file={validFile}
-            deleteHandler={handleDeleteClick}
-            success={successAnimation}
-          />
-        )}
-        {renderedPalette && <PaletteContainer palette={renderedPalette} />}
+    <div className="w-full p-8" {...rest}>
+      <div className="aspect-video w-full rounded-lg">
+        <img
+          ref={imageRef}
+          src={imgSrc === "" ? undefined : imgSrc}
+          alt={validFile.file.name}
+          className="mx-auto h-full rounded-lg"
+        />
       </div>
+      {validFile && (
+        <ImageInfo
+          file={validFile}
+          deleteHandler={handleDeleteClick}
+          success={successAnimation}
+        />
+      )}
+      {renderedPalette && <PaletteContainer palette={renderedPalette} />}
     </div>
   );
 }

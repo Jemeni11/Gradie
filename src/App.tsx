@@ -100,12 +100,11 @@ export default function App() {
         <Header />
         <Hero />
         {validFile ? (
-          <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2 md:pt-8">
             <ImagePreviewWithPalette
               handleDeleteClick={handleDeleteClick}
               successAnimation={successAnimation}
               validFile={validFile}
-              className="aspect-video w-full"
             />
             <GradientPanel />
           </div>

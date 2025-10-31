@@ -146,6 +146,25 @@ export default function FAQ() {
 
         <div>
           <h3 className="text-primary font-aladin w-full scroll-m-20 pb-4 text-3xl font-semibold tracking-tight">
+            How did you make the logo?
+          </h3>
+          <p>
+            I made it in Figma! I actually wrote a whole thread on Twitter about
+            the process. You can check it out{" "}
+            <a
+              href="https://x.com/jemeni11_/status/1919123441355047281"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-primary inline-flex cursor-pointer items-center gap-1 font-medium underline underline-offset-4"
+            >
+              <span>here</span>
+              <LinkIcon className="size-4" />
+            </a>
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-primary font-aladin w-full scroll-m-20 pb-4 text-3xl font-semibold tracking-tight">
             Want more context?
           </h3>
           <p>
