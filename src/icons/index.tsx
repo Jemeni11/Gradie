@@ -289,7 +289,7 @@ export const CircleIcon = (props: SVGProps<SVGSVGElement>) => (
       cx={12}
       cy={12}
       r={10}
-      fill="none"
+      fill="#ee6495"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"

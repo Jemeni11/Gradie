@@ -55,7 +55,7 @@ export default function Header() {
                   value={format}
                   className="cursor-pointer"
                 >
-                  {format}
+                  <span>{format}</span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
