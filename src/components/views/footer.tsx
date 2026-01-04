@@ -21,7 +21,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="text-gradie-2 font-aladin cursor-pointer text-xl font-extrabold 2xl:mb-1 2xl:text-3xl"
           >
-            Emmanuel C. Jemeni
+            @Jemeni11
           </a>
         </span>
       </div>
