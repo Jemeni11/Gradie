@@ -6,6 +6,7 @@ const defaultGradients = [
   )`,
   "linear-gradient(90deg in oklch, oklch(59.327% 0.1897 254.84), oklch(92.065% 0.00256 228.79))",
   "linear-gradient(90deg, #cd7c69, #060505)",
+  "radial-gradient(ellipse at center in oklch, oklch(23.443% 0.03062 283.79), oklch(84.585% 0.04349 297.27))",
   "linear-gradient(90deg, #141414, #d4d4d4)",
   "radial-gradient(circle at right top in hwb, hwb(356.1 34.118% 17.647%), hwb(260 1.5686% 97.255%))",
   "radial-gradient(circle at center in hwb, hwb(36 75.686% 20.392%), hwb(18.75 7.8431% 73.333%))",
