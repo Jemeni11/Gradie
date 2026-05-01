@@ -7,7 +7,7 @@
 <h3 align="center">Gradie</h3>
 
   <p align="center">
-    Turn any image into a vibe.
+    Turn any image into a gradient.
     <br />
     <a href="https://github.com/Jemeni11/Gradie"><strong>Explore the repo »</strong></a>
     <br />

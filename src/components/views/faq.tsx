@@ -38,8 +38,8 @@ export default function FAQ() {
           <p>
             Gradie is a creative tool that turns any image into a smooth CSS
             gradient. Upload an image and Gradie will extract its dominant
-            colors and turn them into a gradient “vibe” you can use as a
-            background, wallpaper, or design element.
+            colors and turn them into a gradient you can use as a background,
+            wallpaper, or design element.
           </p>
         </div>
 
