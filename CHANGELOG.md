@@ -31,3 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed persistent color banding issues in downloaded gradient images by generating independent noise seeds for RGB channels and intelligently applying dithering only to lossless formats.
+- Resolved ESLint `no-explicit-any` errors in the analytics utility by formally extending the global `Window` interface.
+
+### Security
+
+- Resolved numerous high and moderate severity vulnerabilities by enforcing secure dependency resolutions via `pnpm` overrides.
