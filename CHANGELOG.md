@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored the analytics integration to be completely privacy-first, replacing PostHog with a lightweight, consent-based Umami tracker.
 - Reduced the scope of tracked analytics to only the bare minimum (page visits, generation, and downloads) and updated the privacy dialog and FAQ to reflect this.
 - Completely overhauled the gradient export pipeline to use a robust canvas-based approach (supersampling, downsampling, and dithering).
+- Updated the pre-commit hook to use `pnpm exec lint-staged` instead of `npx` and explicitly added `lint-staged` as a devDependency.
 
 ### Removed
 
