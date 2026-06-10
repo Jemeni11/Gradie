@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed the experimental "Enhanced Gradient" UI toggle, as the new export pipeline automatically handles color banding mitigation.
 - Removed the heavy `posthog-js` dependency, significantly reducing bundle size.
+- Removed obsolete `uploadMethod` arguments from the image upload logic (leftover dead code from PostHog).
 
 ### Fixed
 

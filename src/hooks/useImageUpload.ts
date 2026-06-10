@@ -70,7 +70,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
   }, []);
 
   const addFiles = useCallback(
-    (filesToAdd: File[], uploadMethod: "drag" | "paste" | "file" = "file") => {
+    (filesToAdd: File[]) => {
       if (filesToAdd.length > 1) {
         toast.info("Only one image allowed. Using the first one.");
       }
@@ -119,7 +119,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
           `pasted-image-${new Date().toISOString().replace(/:/g, "-")}.png`,
           { type: imageFile.type },
         );
-        addFiles([file], "paste");
+        addFiles([file]);
       } else {
         toast.error("Invalid image!");
       }
@@ -173,7 +173,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
       );
 
       if (droppedFiles.length > 0) {
-        addFiles([droppedFiles[0]], "drag");
+        addFiles([droppedFiles[0]]);
       } else {
         toast.warning("No valid images found in dropped files.");
       }
