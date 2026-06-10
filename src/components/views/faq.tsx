@@ -130,9 +130,9 @@ export default function FAQ() {
           </h3>
           <p>
             Nothing by default. Analytics are off until you opt in. Gradie
-            doesn't store any of your images. As of June 10, 2026, I completely 
-            stripped down the analytics to a lightweight, privacy-focused tracker. 
-            You can read exactly what's tracked{" "}
+            doesn't store any of your images. As of June 10, 2026, I completely
+            stripped down the analytics to a lightweight, privacy-focused
+            tracker. You can read exactly what's tracked{" "}
             <Dialog>
               <DialogTrigger asChild>
                 <span className="text-foreground hover:text-primary cursor-pointer font-medium underline underline-offset-4">

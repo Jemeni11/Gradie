@@ -683,7 +683,9 @@ async function createRasterDownloadUrl({
     scale,
   });
   const outputCanvas =
-    scale > 1 ? downsampleCanvas(capturedCanvas, width, height) : capturedCanvas;
+    scale > 1
+      ? downsampleCanvas(capturedCanvas, width, height)
+      : capturedCanvas;
 
   // Release the potentially large supersampled canvas early
   if (scale > 1) {

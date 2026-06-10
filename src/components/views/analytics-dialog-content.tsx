@@ -37,18 +37,20 @@ export default function AnalyticsDialogContent() {
           </p>
           <ul className="custom-marker-list space-y-1">
             <li>How many people visit the site</li>
-            <li>When someone generates a gradient (and how many colors it has)</li>
+            <li>
+              When someone generates a gradient (and how many colors it has)
+            </li>
             <li>When someone downloads an image (and the format/dimensions)</li>
             <li>When someone selects a size preset</li>
             <li>Whether a download fails</li>
           </ul>
           <p>That's it. I don't know who you are, and I don't want to.</p>
-          <p className="text-xs text-muted-foreground/80 mt-2 italic">
-            Note: Before June 10, 2026, I collected a few more details (like 
-            image dimensions and upload method) via PostHog. I've since removed 
-            PostHog and stripped tracking down to just the absolute basics above. 
-            If you opted in previously, this new, lighter tracking is all that 
-            runs now!
+          <p className="text-muted-foreground/80 mt-2 text-xs italic">
+            Note: Before June 10, 2026, I collected a few more details (like
+            image dimensions and upload method) via PostHog. I've since removed
+            PostHog and stripped tracking down to just the absolute basics
+            above. If you opted in previously, this new, lighter tracking is all
+            that runs now!
           </p>
         </div>
 
