@@ -1,172 +1,80 @@
-import Color from "colorjs.io";
-import colorConverter from "./colorConverter";
-import type { ColorFormat } from "@/types";
-import { toast } from "sonner";
+const MAX_SUPERSAMPLED_PIXELS = 32_000_000;
+const DEFAULT_SUPERSAMPLE_SCALE = 2;
+const DEFAULT_DITHER_AMOUNT = 1.5;
 
-interface ColorStop {
-  color: string;
-  position?: number;
+export function getGradientExportScale(width: number, height: number): number {
+  const pixelCount = width * height;
+
+  if (pixelCount <= 0) {
+    return 1;
+  }
+
+  const cappedScale = Math.sqrt(MAX_SUPERSAMPLED_PIXELS / pixelCount);
+  return Math.max(1, Math.min(DEFAULT_SUPERSAMPLE_SCALE, cappedScale));
 }
 
-/**
- * Enhanced gradient banding fix that handles all gradient formats:
- * - Default/Bold Pop/Soft Sweep (2 colors)
- * - Custom (2 colors with custom stops)
- * - Full Blend (3+ colors)
- */
-export default function createSteppedGradient(
-  gradientString: string,
-  outputFormat: ColorFormat,
-): string {
-  const gradientMatch = gradientString.match(
-    /^(linear|radial|conic)-gradient\(([^)]+)\)$/,
-  );
+export function downsampleCanvas(
+  sourceCanvas: HTMLCanvasElement,
+  width: number,
+  height: number,
+): HTMLCanvasElement {
+  const outputCanvas = document.createElement("canvas");
+  outputCanvas.width = width;
+  outputCanvas.height = height;
 
-  if (!gradientMatch) {
-    return gradientString;
+  const context = outputCanvas.getContext("2d");
+  if (!context) {
+    throw new Error("Could not prepare export canvas");
   }
 
-  const [, gradientType, params] = gradientMatch;
-  const parts = params.split(",").map((part) => part.trim());
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.drawImage(sourceCanvas, 0, 0, width, height);
 
-  // Parse gradient components
-  let direction = "";
-  let interpolation = "";
-  let colorStart = 0;
+  return outputCanvas;
+}
 
-  // Check for direction
-  if (
-    parts[0] &&
-    (parts[0].includes("deg") ||
-      parts[0].includes("to ") ||
-      parts[0].includes("at ") ||
-      parts[0].includes("from "))
-  ) {
-    direction = parts[0];
-    colorStart = 1;
+export function applyCanvasDithering(
+  canvas: HTMLCanvasElement,
+  amount = DEFAULT_DITHER_AMOUNT,
+): void {
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("Could not read export canvas");
   }
 
-  // Check for interpolation method
-  if (parts[colorStart] && parts[colorStart].startsWith("in ")) {
-    interpolation = parts[colorStart];
-    colorStart++;
-  }
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const { data } = imageData;
 
-  // Extract color stops
-  const colorStops: ColorStop[] = [];
-  const colors = parts.slice(colorStart);
+  for (let y = 0; y < canvas.height; y++) {
+    for (let x = 0; x < canvas.width; x++) {
+      const index = (y * canvas.width + x) * 4;
 
-  if (colors.length < 2) {
-    return gradientString;
-  }
+      if (data[index + 3] === 0) {
+        continue;
+      }
 
-  // Parse colors and their positions
-  for (const colorPart of colors) {
-    const match = colorPart.match(/^(.+?)\s+(\d+)%$/);
-    if (match) {
-      // Color with explicit position (Custom mode)
-      colorStops.push({
-        color: match[1].trim(),
-        position: parseInt(match[2]),
-      });
-    } else {
-      // Color without position (Default/Full Blend modes)
-      colorStops.push({
-        color: colorPart.trim(),
-      });
+      const noiseR = (hashNoise(x, y, 0) - 0.5) * amount * 2;
+      const noiseG = (hashNoise(x, y, 1) - 0.5) * amount * 2;
+      const noiseB = (hashNoise(x, y, 2) - 0.5) * amount * 2;
+      data[index] = clampColorChannel(data[index] + noiseR);
+      data[index + 1] = clampColorChannel(data[index + 1] + noiseG);
+      data[index + 2] = clampColorChannel(data[index + 2] + noiseB);
     }
   }
 
-  try {
-    let steppedColors: string[] = [];
-
-    if (colorStops.length === 2) {
-      // Handle 2-color gradients (Default/Bold Pop/Soft Sweep/Custom)
-      steppedColors = handle2ColorGradient(colorStops, outputFormat);
-    } else {
-      // Handle multi-color gradients (Full Blend)
-      steppedColors = handleMultiColorGradient(colorStops, outputFormat);
-    }
-
-    // Reconstruct gradient
-    const directionPart = direction ? `${direction}, ` : "";
-    const interpolationPart = interpolation ? `${interpolation}, ` : "";
-
-    return `${gradientType}-gradient(${directionPart}${interpolationPart}${steppedColors.join(", ")})`;
-  } catch (error) {
-    toast.warning(`Failed to create stepped gradient: ${error}`);
-    console.warn("Failed to create stepped gradient:", error);
-    return gradientString;
-  }
+  context.putImageData(imageData, 0, 0);
 }
 
-function handle2ColorGradient(
-  colorStops: ColorStop[],
-  format: ColorFormat,
-): string[] {
-  const [start, end] = colorStops;
-  const startColor = new Color(start.color);
-  const endColor = new Color(end.color);
-
-  // If custom stops are provided, use fewer intermediate steps (5-8)
-  const hasCustomStops =
-    start.position !== undefined || end.position !== undefined;
-  const steps = hasCustomStops ? 6 : 15;
-
-  const startPos = start.position ?? 0;
-  const endPos = end.position ?? 100;
-
-  const steppedColors: string[] = [];
-
-  for (let i = 0; i <= steps; i++) {
-    const progress = i / steps;
-    const position = Math.round(startPos + (endPos - startPos) * progress);
-
-    const interpolated = startColor.mix(endColor, progress);
-    const colorString = colorConverter(interpolated.toString(), format);
-
-    steppedColors.push(`${colorString} ${position}%`);
-  }
-
-  return steppedColors;
+function hashNoise(x: number, y: number, channel = 0): number {
+  let hash =
+    Math.imul(x, 374761393) ^
+    Math.imul(y, 668265263) ^
+    Math.imul(channel, 2147483647);
+  hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
+  return ((hash ^ (hash >>> 16)) >>> 0) / 4_294_967_295;
 }
 
-function handleMultiColorGradient(
-  colorStops: ColorStop[],
-  format: ColorFormat,
-): string[] {
-  const steppedColors: string[] = [];
-  const totalColors = colorStops.length;
-
-  // Auto-distribute positions if not provided
-  const positions = colorStops.map(
-    (stop, index) =>
-      stop.position ?? Math.round((index / (totalColors - 1)) * 100),
-  );
-
-  // Add steps between each adjacent pair
-  for (let i = 0; i < totalColors - 1; i++) {
-    const startColor = new Color(colorStops[i].color);
-    const endColor = new Color(colorStops[i + 1].color);
-    const startPos = positions[i];
-    const endPos = positions[i + 1];
-
-    // 6 steps between each pair to keep total manageable
-    const steps = 6;
-
-    for (let j = 0; j <= steps; j++) {
-      // Skip the end point for intermediate pairs (avoid duplicates)
-      if (i < totalColors - 2 && j === steps) continue;
-
-      const progress = j / steps;
-      const position = Math.round(startPos + (endPos - startPos) * progress);
-
-      const interpolated = startColor.mix(endColor, progress);
-      const colorString = colorConverter(interpolated.toString(), format);
-
-      steppedColors.push(`${colorString} ${position}%`);
-    }
-  }
-
-  return steppedColors;
+function clampColorChannel(value: number): number {
+  return Math.max(0, Math.min(255, Math.round(value)));
 }

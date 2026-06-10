@@ -11,7 +11,7 @@ import {
 } from "@/store";
 import PaletteContainer from "./palette-container";
 import ImageInfo from "./image-info";
-import { usePostHog } from "posthog-js/react";
+import { trackEvent } from "@/utils";
 import { ValidatedFile } from "@/types";
 
 /**
@@ -27,8 +27,6 @@ export default function ImagePreviewWithPalette({
   validFile: ValidatedFile;
   handleDeleteClick: () => void;
 }>) {
-  const posthog = usePostHog();
-
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
   const imageRef = useRef<HTMLImageElement>(null);
   const imageFile = validFile?.file ?? null;
@@ -63,12 +61,10 @@ export default function ImagePreviewWithPalette({
       imageFile
     ) {
       toast.error("Image appears to be too plain to generate a palette.");
-      posthog?.capture("image_rejected", {
-        reason: "Image appears to be too plain to generate a palette.",
-      });
+      setLoadingState(false);
       handleDeleteClick();
     }
-  }, [error, loading, palette, posthog, handleDeleteClick, imageFile]);
+  }, [error, loading, palette, handleDeleteClick, imageFile, setLoadingState]);
 
   useEffect(() => {
     if (!imgSrc || !imageRef.current) return;
@@ -103,11 +99,11 @@ export default function ImagePreviewWithPalette({
   useEffect(() => {
     if (Array.isArray(palette)) {
       setPalette(palette as string[]);
-      posthog?.capture("palette_generated", {
-        palette_size: palette.length,
+      trackEvent("Palette Generated", {
+        colorCount: palette.length,
       });
     }
-  }, [palette, setPalette, posthog]);
+  }, [palette, setPalette]);
 
   const convertedPalette = useAtomValue(convertedPaletteAtom);
   const renderedPalette = convertedPalette ?? palette;

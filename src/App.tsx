@@ -10,7 +10,6 @@ import {
 } from "@/components/views";
 import { ImagePreviewWithPalette } from "@/components/image";
 import Banner from "@/components/views/banner";
-import { usePostHog } from "posthog-js/react";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import defaultGradients from "@/constants/defaultGradient";
 import {
@@ -27,9 +26,9 @@ import { Button } from "@/components/ui/button";
 import { InfoIcon } from "@/icons";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ImageUploadDropArea from "@/components/image/image-upload-drop-area";
+import { initAnalytics } from "@/utils";
 
 export default function App() {
-  const posthog = usePostHog();
   const [showBanner, setShowBanner] = useState(false);
 
   const [index, setIndex] = useState(
@@ -55,7 +54,7 @@ export default function App() {
 
   const handleEnableAnalytics = () => {
     localStorage.setItem("gradie-analytics-consent", "true");
-    posthog?.opt_in_capturing();
+    initAnalytics();
     setShowBanner(false);
   };
 
@@ -67,12 +66,12 @@ export default function App() {
   useEffect(() => {
     const analyticsConsent = localStorage.getItem("gradie-analytics-consent");
     if (analyticsConsent === "true") {
-      posthog?.opt_in_capturing();
+      initAnalytics();
     } else if (analyticsConsent === null) {
       // Show banner only if user hasn’t decided
       setShowBanner(true);
     }
-  }, [posthog]);
+  }, []);
 
   const fadeDuration = 1000;
   const displayDuration = 5000;
@@ -125,7 +124,7 @@ export default function App() {
                   <DialogHeader>
                     <DialogTitle>Upload an image</DialogTitle>
                     <DialogDescription>
-                      <span>Create a vibe</span>
+                      <span>Create a gradient</span>
                       <span className="animate-bounce">✨</span>
                     </DialogDescription>
                   </DialogHeader>

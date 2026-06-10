@@ -17,11 +17,8 @@ import {
   radialShapeAtom,
   originalImageSizeAtom,
 } from "@/store";
-import { usePostHog } from "posthog-js/react";
 
 export function useImageUpload(onDrop?: (files: File[]) => void) {
-  const posthog = usePostHog();
-
   const [images, setImages] = useAtom(imageAtom);
   const setPalette = useSetAtom(paletteAtom);
   const setCustomPickStart = useSetAtom(customPickStartAtom);
@@ -92,19 +89,10 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
       if (newFile.status.length === 0) {
         setSuccessAnimation(true);
         setTimeout(() => setSuccessAnimation(false), 1500);
-        posthog?.capture("image_uploaded", {
-          type: newFile.file.type,
-          size_kb: Math.round(newFile.file.size / 1024),
-          method: uploadMethod,
-        });
         onDrop?.([newFile.file]);
-      } else {
-        posthog?.capture("image_rejected", {
-          reason: newFile.status.join(", "),
-        });
       }
     },
-    [validateFile, onDrop, setImages, posthog],
+    [validateFile, onDrop, setImages],
   );
 
   const handlePaste = useCallback(

@@ -3,9 +3,9 @@ import type { DownloadConfig } from "@/types";
 
 // Core download config
 export const downloadConfigAtom = atom<DownloadConfig>({
-  format: "webp",
+  format: "png",
   filename: "gradie-gradient",
-  quality: 90,
+  quality: 100,
 
   dimensionMode: "original",
   width: 1200,

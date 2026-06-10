@@ -1,11 +1,10 @@
 import { useAtomValue, useAtom } from "jotai";
 import { useMemo, useRef, useState, useCallback } from "react";
-import { domToJpeg, domToPng, domToSvg, domToWebp } from "modern-screenshot";
+import { domToCanvas, domToSvg } from "modern-screenshot";
 import {
   gradientStringAtom,
   originalImageSizeAtom,
   downloadConfigAtom,
-  colorFormatAtom,
 } from "@/store";
 import {
   Dialog,
@@ -43,16 +42,16 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 import { capitalizeFirstLetter } from "@/utils";
 import GradientPreview from "./gradient-preview";
 import { toast } from "sonner";
-import { usePostHog } from "posthog-js/react";
+import { trackEvent } from "@/utils";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-
-import createSteppedGradient from "@/utils/colorBandingFix";
+import {
+  applyCanvasDithering,
+  downsampleCanvas,
+  getGradientExportScale,
+} from "@/utils/colorBandingFix";
 
 export default function DownloadDialog() {
-  const posthog = usePostHog();
-
   const gradientString = useAtomValue(gradientStringAtom);
   const previewRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -60,10 +59,6 @@ export default function DownloadDialog() {
   const [downloadConfig, setDownloadConfig] = useAtom(downloadConfigAtom);
   const originalImageSize = useAtomValue(originalImageSizeAtom);
   const { height: browserHeight, width: browserWidth } = useWindowSize();
-
-  const colorFormat = useAtomValue(colorFormatAtom);
-
-  const [useEnhancedGradient, setUseEnhancedGradient] = useState(false);
 
   // Helper to calculate dimensions based on aspect ratio
   const calculateAspectRatioDimensions = useCallback(
@@ -131,17 +126,6 @@ export default function DownloadDialog() {
     [setDownloadConfig],
   );
 
-  // Export functions map
-  const exportFunctions = useMemo(
-    () => ({
-      png: domToPng,
-      webp: domToWebp,
-      jpeg: domToJpeg,
-      svg: domToSvg,
-    }),
-    [],
-  );
-
   const handleDownload = async () => {
     if (!previewRef.current) {
       toast.error("Preview not ready");
@@ -151,19 +135,6 @@ export default function DownloadDialog() {
     setIsDownloading(true);
 
     try {
-      console.log(previewRef.current.style.background);
-
-      // Apply the stepped gradient to reduce banding
-      previewRef.current.style.background = useEnhancedGradient
-        ? createSteppedGradient(gradientString, colorFormat)
-        : gradientString;
-
-      console.log(colorFormat);
-      console.log(previewRef.current.style.background);
-
-      // Small delay to ensure the DOM has updated with the new gradient
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
       const fileFormatConfig = supportedDownloadFormats.find(
         (f) => f.name === downloadConfig.format,
       );
@@ -172,48 +143,66 @@ export default function DownloadDialog() {
         throw new Error(`Unsupported format: ${downloadConfig.format}`);
       }
 
+      const width = Math.max(1, Math.round(exportDimensions.width));
+      const height = Math.max(1, Math.round(exportDimensions.height));
+      const quality = fileFormatConfig.quality
+        ? downloadConfig.quality / 100
+        : undefined;
+      // Explicitly reset `background` shorthand so the `backgroundImage`
+      // longhand isn't silently overridden if the preview component ever
+      // switches from `backgroundImage` to the `background` shorthand.
+      const exportStyle: Partial<CSSStyleDeclaration> = {
+        background: "none",
+        backgroundImage: gradientString,
+        border: "none",
+        borderRadius: "0px",
+        transform: "none",
+      };
       const exportOptions = {
-        width: exportDimensions.width,
-        height: exportDimensions.height,
-        quality: fileFormatConfig.quality
-          ? downloadConfig.quality / 100
-          : undefined,
+        width,
+        height,
+        backgroundColor: null,
         style: {
-          border: "none",
-          borderRadius: "0px",
+          ...exportStyle,
         },
       };
 
-      const exportFn =
-        exportFunctions[downloadConfig.format as keyof typeof exportFunctions];
-      if (!exportFn) {
-        toast.error(`Unsupported format: ${downloadConfig.format}`);
-        throw new Error(`Unsupported format: ${downloadConfig.format}`);
-      }
-
-      const dataUrl = await exportFn(previewRef.current, exportOptions);
+      const href =
+        downloadConfig.format === "svg"
+          ? await domToSvg(previewRef.current, exportOptions)
+          : await createRasterDownloadUrl({
+              node: previewRef.current,
+              options: exportOptions,
+              mimeType: fileFormatConfig.mime,
+              quality,
+            });
 
       // Create and trigger download
       const link = document.createElement("a");
       const filename = downloadConfig.filename || "gradie-gradient";
       link.download = `${filename}.${fileFormatConfig.ext}`;
-      link.href = dataUrl;
+      link.href = href;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
+      if (href.startsWith("blob:")) {
+        URL.revokeObjectURL(href);
+      }
+
       toast.success("Download completed!");
 
-      posthog?.capture("download_successful", {
+      trackEvent("Download Image", {
         format: fileFormatConfig?.name,
-        enhanced_gradient: useEnhancedGradient,
+        width,
+        height,
       });
     } catch (error) {
       console.error("Download failed:", error);
       toast.error(
         `Download failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
-      posthog?.capture("download_failed", {
+      trackEvent("Download Failed", {
         reason: `${error instanceof Error ? error.message : error}`,
       });
     } finally {
@@ -279,13 +268,13 @@ export default function DownloadDialog() {
           width: preset.width,
           height: preset.height,
         });
-        posthog?.capture("preset_selected", {
+        trackEvent("Preset Selected", {
           name: preset.label,
           category: preset.category,
         });
       }
     },
-    [updateConfig, posthog],
+    [updateConfig],
   );
 
   const updateFilename = useCallback(
@@ -376,7 +365,7 @@ export default function DownloadDialog() {
           <span>Download</span>
         </button>
       </DialogTrigger>
-      <DialogContent className="h-full max-h-[80%] w-screen overflow-y-scroll md:max-h-auto md:min-h-screen md:w-[80vw] md:overflow-y-auto">
+      <DialogContent className="md:max-h-auto h-full max-h-[80%] w-screen overflow-y-scroll md:min-h-screen md:w-[80vw] md:overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-3xl font-semibold">
             Download gradient
@@ -392,33 +381,6 @@ export default function DownloadDialog() {
               content={exportOptionsFieldArray}
               className="flex-1"
             />
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2 py-1">
-                <Switch
-                  id="enhanced-gradient"
-                  checked={useEnhancedGradient}
-                  onCheckedChange={(checked) => {
-                    setUseEnhancedGradient(checked);
-                    posthog?.capture("enhanced_gradient_toggled", {
-                      enabled: checked,
-                    });
-                  }}
-                />
-                <label
-                  htmlFor="enhanced-gradient"
-                  className="text-sm leading-none"
-                >
-                  Use enhanced gradient (experimental)
-                </label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch className="invisible" />
-                <small className="text-gray-500">
-                  Attempts to reduce color banding. Not always necessary, and
-                  results may vary. Try downloading without it first.
-                </small>
-              </div>
-            </div>
           </div>
           <div className="min-h-full px-4 md:max-h-[60vh] md:overflow-y-auto">
             <div className="flex w-full flex-col gap-4 pb-8">
@@ -690,12 +652,74 @@ export default function DownloadDialog() {
             onClick={handleDownload}
             disabled={isDownloading}
           >
-            {isDownloading ? "Downloading..." : "Download"}
+            {isDownloading ? "Downloading\u2026" : "Download"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
+}
+
+async function createRasterDownloadUrl({
+  node,
+  options,
+  mimeType,
+  quality,
+}: {
+  node: HTMLElement;
+  options: {
+    width: number;
+    height: number;
+    backgroundColor: null;
+    style: Partial<CSSStyleDeclaration>;
+  };
+  mimeType: string;
+  quality?: number;
+}) {
+  const { width, height } = options;
+  const scale = getGradientExportScale(width, height);
+  const capturedCanvas = await domToCanvas(node, {
+    ...options,
+    scale,
+  });
+  const outputCanvas =
+    scale > 1 ? downsampleCanvas(capturedCanvas, width, height) : capturedCanvas;
+
+  // Release the potentially large supersampled canvas early
+  if (scale > 1) {
+    capturedCanvas.width = 0;
+    capturedCanvas.height = 0;
+  }
+
+  // Only dither lossless formats — lossy encoders (WebP, JPEG) do their
+  // own error diffusion and the added noise fights their quantiser.
+  const isLossless = mimeType === "image/png";
+  if (isLossless) {
+    applyCanvasDithering(outputCanvas);
+  }
+
+  const blob = await canvasToBlob(outputCanvas, mimeType, quality);
+  return URL.createObjectURL(blob);
+}
+
+function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  mimeType: string,
+  quality?: number,
+): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Failed to create export blob"));
+        }
+      },
+      mimeType,
+      quality,
+    );
+  });
 }
 
 function ExportOptionsField({
