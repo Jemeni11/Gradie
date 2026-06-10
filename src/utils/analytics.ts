@@ -1,15 +1,26 @@
+declare global {
+  interface Window {
+    umami?: {
+      track: (eventName: string, eventData?: Record<string, unknown>) => void;
+    };
+  }
+}
+
 /**
  * Event tracker for lightweight analytics.
  */
-export const trackEvent = (eventName: string, props?: Record<string, any>) => {
+export const trackEvent = (
+  eventName: string,
+  props?: Record<string, unknown>,
+) => {
   const consent = localStorage.getItem("gradie-analytics-consent") === "true";
   if (!consent || typeof window === "undefined") return;
 
   if (
-    typeof (window as any).umami === "object" &&
-    typeof (window as any).umami.track === "function"
+    typeof window.umami === "object" &&
+    typeof window.umami.track === "function"
   ) {
-    (window as any).umami.track(eventName, props);
+    window.umami.track(eventName, props);
   }
 };
 
@@ -26,7 +37,10 @@ export const initAnalytics = () => {
   const script = document.createElement("script");
   script.defer = true;
   script.src = "https://cloud.umami.is/script.js";
-  script.setAttribute("data-website-id", "7baf1f4c-1bdf-42f2-b2dd-f9da7b2fc209");
+  script.setAttribute(
+    "data-website-id",
+    "7baf1f4c-1bdf-42f2-b2dd-f9da7b2fc209",
+  );
 
   document.head.appendChild(script);
 };
