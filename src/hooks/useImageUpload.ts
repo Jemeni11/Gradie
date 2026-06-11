@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
-import { RESET } from "jotai/utils";
-import { generateUUID } from "@/utils";
-import { ValidatedFile } from "@/types";
+
 import { useSetAtom, useAtom } from "jotai";
+import { RESET } from "jotai/utils";
+import { toast } from "sonner";
+
 import {
   imageAtom,
   paletteAtom,
@@ -17,6 +17,8 @@ import {
   radialShapeAtom,
   originalImageSizeAtom,
 } from "@/store";
+import { ValidatedFile } from "@/types";
+import { generateUUID } from "@/utils";
 
 export function useImageUpload(onDrop?: (files: File[]) => void) {
   const [images, setImages] = useAtom(imageAtom);
@@ -114,11 +116,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
 
       const imageFile = images[0].getAsFile();
       if (imageFile) {
-        const file = new File(
-          [imageFile],
-          `pasted-image-${new Date().toISOString().replace(/:/g, "-")}.png`,
-          { type: imageFile.type },
-        );
+        const file = new File([imageFile], `pasted-image-${new Date().toISOString().replace(/:/g, "-")}.png`, { type: imageFile.type });
         addFiles([file]);
       } else {
         toast.error("Invalid image!");
@@ -132,34 +130,23 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
     return () => document.removeEventListener("paste", handlePaste);
   }, [handlePaste]);
 
-  const handleDragOver = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setDragIsOver(true);
-    },
-    [],
-  );
+  const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragIsOver(true);
+  }, []);
 
-  const handleDragLeave = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const rect = dropAreaRef.current?.getBoundingClientRect();
-      if (rect) {
-        const { clientX, clientY } = event;
-        if (
-          clientX <= rect.left ||
-          clientX >= rect.right ||
-          clientY <= rect.top ||
-          clientY >= rect.bottom
-        ) {
-          setDragIsOver(false);
-        }
+  const handleDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const rect = dropAreaRef.current?.getBoundingClientRect();
+    if (rect) {
+      const { clientX, clientY } = event;
+      if (clientX <= rect.left || clientX >= rect.right || clientY <= rect.top || clientY >= rect.bottom) {
+        setDragIsOver(false);
       }
-    },
-    [],
-  );
+    }
+  }, []);
 
   const handleDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -168,9 +155,7 @@ export function useImageUpload(onDrop?: (files: File[]) => void) {
       setDragIsOver(false);
 
       let droppedFiles = Array.from(event.dataTransfer.files);
-      droppedFiles = droppedFiles.filter((file) =>
-        file.type.startsWith("image/"),
-      );
+      droppedFiles = droppedFiles.filter((file) => file.type.startsWith("image/"));
 
       if (droppedFiles.length > 0) {
         addFiles([droppedFiles[0]]);

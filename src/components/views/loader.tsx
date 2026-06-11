@@ -7,22 +7,11 @@ export default function Loader() {
         <LoaderIcon />
       </div>
       <div className="text-center">
-        <p className="animate-pulse text-lg font-medium">
-          Generating palette...
-        </p>
+        <p className="animate-pulse text-lg font-medium">Generating palette...</p>
         <div className="mt-2 flex justify-center space-x-1">
-          <div
-            className="bg-gradie-2 h-2 w-2 animate-bounce rounded-full"
-            style={{ animationDelay: "0ms" }}
-          ></div>
-          <div
-            className="bg-gradie-2 h-2 w-2 animate-bounce rounded-full"
-            style={{ animationDelay: "150ms" }}
-          ></div>
-          <div
-            className="bg-gradie-2 h-2 w-2 animate-bounce rounded-full"
-            style={{ animationDelay: "300ms" }}
-          ></div>
+          <div className="h-2 w-2 animate-bounce rounded-full bg-gradie-2" style={{ animationDelay: "0ms" }}></div>
+          <div className="h-2 w-2 animate-bounce rounded-full bg-gradie-2" style={{ animationDelay: "150ms" }}></div>
+          <div className="h-2 w-2 animate-bounce rounded-full bg-gradie-2" style={{ animationDelay: "300ms" }}></div>
         </div>
       </div>
     </div>

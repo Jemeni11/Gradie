@@ -1,12 +1,12 @@
 import colorInterpolationMethodMapper from "./colorInterpolationMethod";
-import gradieModes from "./gradieModes";
-import gradientTypes from "./gradientTypes";
-import supportedColorFormats from "./supportedColorFormats";
-import gradientPositions from "./gradientPositions";
-import supportedDownloadFormats from "./supportedDownloadFormats";
+import dimensionModes from "./dimensionModes";
 import dimensionPresets from "./dimensionPresets";
 import downloadAspectRatios from "./downloadAspectRatios";
-import dimensionModes from "./dimensionModes";
+import gradieModes from "./gradieModes";
+import gradientPositions from "./gradientPositions";
+import gradientTypes from "./gradientTypes";
+import supportedColorFormats from "./supportedColorFormats";
+import supportedDownloadFormats from "./supportedDownloadFormats";
 
 export {
   colorInterpolationMethodMapper,

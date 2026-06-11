@@ -1,11 +1,8 @@
 import Color from "colorjs.io";
+
 import type { ColorFormat } from "@/types";
 
-export default function getMostContrastingColor(
-  palette: string[],
-  base: string,
-  format: ColorFormat,
-): string {
+export default function getMostContrastingColor(palette: string[], base: string, format: ColorFormat): string {
   const baseColor = new Color(base);
   let maxContrast = 0;
   let resultColor = palette[0];
@@ -19,9 +16,7 @@ export default function getMostContrastingColor(
     }
   }
 
-  const mostConstratingColor = new Color(resultColor)
-    .to(colorSpace)
-    .toString({ format });
+  const mostConstratingColor = new Color(resultColor).to(colorSpace).toString({ format });
 
   return mostConstratingColor;
 }

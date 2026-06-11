@@ -1,10 +1,8 @@
 import Color from "colorjs.io";
+
 import type { ColorFormat } from "@/types";
 
-export default function colorConverter(
-  colorString: string,
-  format: ColorFormat,
-): string {
+export default function colorConverter(colorString: string, format: ColorFormat): string {
   const color = new Color(colorString);
 
   switch (format) {

@@ -1,13 +1,10 @@
-import type { ColorThiefColor } from "@/hooks/useColorThief";
-import { copyToClipboard } from "@/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "@/icons";
+import { copyToClipboard } from "@/utils";
 
-export default function PaletteContainer({
-  palette,
-}: {
-  palette: ColorThiefColor[];
-}) {
+import type { ColorThiefColor } from "@/hooks/useColorThief";
+
+export default function PaletteContainer({ palette }: { palette: ColorThiefColor[] }) {
   return (
     <>
       <div className="flex w-full flex-col justify-between gap-y-4 rounded-lg sm:flex-row sm:flex-wrap sm:gap-x-2 lg:gap-x-4">
@@ -21,7 +18,7 @@ export default function PaletteContainer({
           >
             <span
               // className="shadow-gradie-2 h-20 w-[100%] rounded min-[900px]:size-14 md:size-10 md:rounded-xl lg:size-20"
-              className="shadow-gradie-2 h-20 w-[100%] rounded md:w-[100%] lg:rounded-xl"
+              className="h-20 w-[100%] rounded shadow-gradie-2 md:w-[100%] lg:rounded-xl"
               style={{ background: `${paletteColor}` }}
               key={`${paletteColor}`}
             />
@@ -31,7 +28,7 @@ export default function PaletteContainer({
           </button>
         ))}
       </div>
-      <Alert className="border-gradie-2 mt-4">
+      <Alert className="mt-4 border-gradie-2">
         <InfoIcon className="size-4 animate-pulse motion-reduce:animate-none" />
         <AlertTitle>Quick tip</AlertTitle>
         <AlertDescription>Click any color to copy its value</AlertDescription>

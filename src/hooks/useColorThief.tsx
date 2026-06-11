@@ -1,7 +1,10 @@
 import { useState, useEffect, RefObject, useCallback } from "react";
+
 import ColorThief from "colorthief";
-import type { ColorFormat } from "@/types";
+
 import { colorConverter } from "@/utils";
+
+import type { ColorFormat } from "@/types";
 
 export type ColorThiefColor = string | null;
 
@@ -121,10 +124,7 @@ const extractColorFromCanvas = (img: HTMLImageElement): ColorThiefColor => {
  * Enhanced hook to grab a primary color and a color palette from an image ref, url, or data url
  * with comprehensive error handling and loading states
  */
-const useColorThief = (
-  source: string | RefObject<HTMLImageElement> | null,
-  options: ColorThiefOptions = {},
-): ColorThiefOutput => {
+const useColorThief = (source: string | RefObject<HTMLImageElement> | null, options: ColorThiefOptions = {}): ColorThiefOutput => {
   const { format = "hex", quality = 10, colorCount = 10 } = options;
 
   const [url, setUrl] = useState("");
@@ -158,11 +158,7 @@ const useColorThief = (
       setUrl(source);
     } else {
       const { current } = source as RefObject<HTMLImageElement>;
-      if (
-        current &&
-        current instanceof HTMLImageElement &&
-        current.src !== window.location.href
-      ) {
+      if (current && current instanceof HTMLImageElement && current.src !== window.location.href) {
         const setCurrentSrc = () => {
           if (current.src) {
             setUrl(current.src);
@@ -205,12 +201,7 @@ const useColorThief = (
       if (!isCurrent) return;
 
       try {
-        const { color, palette } = safeColorExtraction(
-          img!,
-          quality,
-          colorCount,
-          format,
-        );
+        const { color, palette } = safeColorExtraction(img!, quality, colorCount, format);
 
         setOutput({
           color,
@@ -232,9 +223,7 @@ const useColorThief = (
     const handleImageError = () => {
       if (!isCurrent) return;
 
-      const errorMsg = img?.src.startsWith("data:")
-        ? "Failed to load data URL image"
-        : `Failed to load image from ${url}`;
+      const errorMsg = img?.src.startsWith("data:") ? "Failed to load data URL image" : `Failed to load image from ${url}`;
 
       setOutput((prev) => ({
         ...prev,

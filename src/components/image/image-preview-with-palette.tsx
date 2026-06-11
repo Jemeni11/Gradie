@@ -1,18 +1,15 @@
 import { useEffect, useState, useRef } from "react";
-import { toast } from "sonner";
+
 import { useAtomValue, useSetAtom } from "jotai";
+import { toast } from "sonner";
+
 import useColorThief from "@/hooks/useColorThief";
-import {
-  paletteAtom,
-  convertedPaletteAtom,
-  loadingStateAtom,
-  originalImageSizeAtom,
-  downloadConfigAtom,
-} from "@/store";
-import PaletteContainer from "./palette-container";
-import ImageInfo from "./image-info";
-import { trackEvent } from "@/utils";
+import { paletteAtom, convertedPaletteAtom, loadingStateAtom, originalImageSizeAtom, downloadConfigAtom } from "@/store";
 import { ValidatedFile } from "@/types";
+import { trackEvent } from "@/utils";
+
+import ImageInfo from "./image-info";
+import PaletteContainer from "./palette-container";
 
 /**
  * The ImagePreviewWithPalette component provides a user interface viewing an uploaded image
@@ -53,13 +50,7 @@ export default function ImagePreviewWithPalette({
     }
 
     // Handle "invalid" image if palette is too short
-    if (
-      !loading &&
-      !error &&
-      Array.isArray(palette) &&
-      palette.length == 1 &&
-      imageFile
-    ) {
+    if (!loading && !error && Array.isArray(palette) && palette.length == 1 && imageFile) {
       toast.error("Image appears to be too plain to generate a palette.");
       setLoadingState(false);
       handleDeleteClick();
@@ -111,20 +102,9 @@ export default function ImagePreviewWithPalette({
   return (
     <div className="w-full p-8" {...rest}>
       <div className="aspect-video w-full rounded-lg">
-        <img
-          ref={imageRef}
-          src={imgSrc === "" ? undefined : imgSrc}
-          alt={validFile.file.name}
-          className="mx-auto h-full rounded-lg"
-        />
+        <img ref={imageRef} src={imgSrc === "" ? undefined : imgSrc} alt={validFile.file.name} className="mx-auto h-full rounded-lg" />
       </div>
-      {validFile && (
-        <ImageInfo
-          file={validFile}
-          deleteHandler={handleDeleteClick}
-          success={successAnimation}
-        />
-      )}
+      {validFile && <ImageInfo file={validFile} deleteHandler={handleDeleteClick} success={successAnimation} />}
       {renderedPalette && <PaletteContainer palette={renderedPalette} />}
     </div>
   );

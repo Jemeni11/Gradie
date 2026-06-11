@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import type { DownloadConfig } from "@/types";
 
 // Core download config

@@ -1,20 +1,8 @@
 import { SVGProps } from "react";
 
 export const ImageIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
       <rect width={18} height={18} x={3} y={3} rx={2} ry={2}></rect>
       <circle cx={9} cy={9} r={2}></circle>
       <path d="m21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
@@ -23,20 +11,8 @@ export const ImageIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const DocumentIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
       <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
       <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
       <circle cx={10} cy={12} r={2}></circle>
@@ -46,13 +22,7 @@ export const DocumentIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const DeleteIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
     <path
       fill="none"
       stroke="currentColor"
@@ -65,20 +35,8 @@ export const DeleteIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const InfoIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
       <circle cx={12} cy={12} r={10}></circle>
       <path d="M12 16v-4m0-4h.01"></path>
     </g>
@@ -86,20 +44,8 @@ export const InfoIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const OptionsIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
       <path d="M20 7h-9m3 10H5"></path>
       <circle cx={17} cy={17} r={3}></circle>
       <circle cx={7} cy={7} r={3}></circle>
@@ -108,17 +54,8 @@ export const OptionsIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const DownloadIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path
-      fill="#000"
-      d="M15 5h2.5v7.5h3.125L15 18.125M15 5h-2.5v7.5H9.375L15 18.125"
-    />
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <path fill="#000" d="M15 5h2.5v7.5h3.125L15 18.125M15 5h-2.5v7.5H9.375L15 18.125" />
     <path
       stroke="#000"
       strokeLinecap="round"
@@ -164,13 +101,7 @@ export const GitHubSponsorsIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const LinkIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
     <path
       fill="none"
       stroke="currentColor"
@@ -183,108 +114,37 @@ export const LinkIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const XIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M18 6L6 18M6 6l12 12"
-    ></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 6L6 18M6 6l12 12"></path>
   </svg>
 );
 
 export const CheckIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M20 6L9 17l-5-5"
-    ></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 6L9 17l-5-5"></path>
   </svg>
 );
 
 export const ChevronUpIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="m18 15l-6-6l-6 6"
-    ></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m18 15l-6-6l-6 6"></path>
   </svg>
 );
 
 export const ChevronDownIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="m6 9l6 6l6-6"
-    ></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m6 9l6 6l6-6"></path>
   </svg>
 );
 
 export const ChevronRightIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="m9 18l6-6l-6-6"
-    ></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
+    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m9 18l6-6l-6-6"></path>
   </svg>
 );
 
 export const CircleIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}>
     <circle
       cx={12}
       cy={12}
@@ -299,23 +159,8 @@ export const CircleIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const LoaderIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    width="120"
-    height="120"
-    viewBox="0 0 408 408"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className="animate-float"
-    {...props}
-  >
-    <rect
-      y="204"
-      width="288.5"
-      height="288.5"
-      rx="13.5"
-      transform="rotate(-45 0 204)"
-      fill="url(#paint0_linear_183_34)"
-    />
+  <svg width="120" height="120" viewBox="0 0 408 408" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-float" {...props}>
+    <rect y="204" width="288.5" height="288.5" rx="13.5" transform="rotate(-45 0 204)" fill="url(#paint0_linear_183_34)" />
     <rect
       x="6.95117"
       y="151.201"
@@ -334,57 +179,22 @@ export const LoaderIcon = (props: SVGProps<SVGSVGElement>) => (
       transform="rotate(-15 27.3306 102)"
       fill="url(#paint2_linear_183_34)"
     />
-    <rect
-      x="59.75"
-      y="59.75"
-      width="288.5"
-      height="288.5"
-      rx="13.5"
-      fill="url(#paint3_linear_183_34)"
-    />
+    <rect x="59.75" y="59.75" width="288.5" height="288.5" rx="13.5" fill="url(#paint3_linear_183_34)" />
 
     <defs>
-      <linearGradient
-        id="paint0_linear_183_34"
-        x1="144.25"
-        y1="204"
-        x2="144.25"
-        y2="492.499"
-        gradientUnits="userSpaceOnUse"
-      >
+      <linearGradient id="paint0_linear_183_34" x1="144.25" y1="204" x2="144.25" y2="492.499" gradientUnits="userSpaceOnUse">
         <stop stopColor="#EEEDEA" />
         <stop offset="1" stopColor="#EE6495" />
       </linearGradient>
-      <linearGradient
-        id="paint1_linear_183_34"
-        x1="151.201"
-        y1="151.201"
-        x2="151.201"
-        y2="439.7"
-        gradientUnits="userSpaceOnUse"
-      >
+      <linearGradient id="paint1_linear_183_34" x1="151.201" y1="151.201" x2="151.201" y2="439.7" gradientUnits="userSpaceOnUse">
         <stop stopColor="#EEEDEA" />
         <stop offset="1" stopColor="#EE6495" />
       </linearGradient>
-      <linearGradient
-        id="paint2_linear_183_34"
-        x1="171.58"
-        y1="102"
-        x2="171.58"
-        y2="390.5"
-        gradientUnits="userSpaceOnUse"
-      >
+      <linearGradient id="paint2_linear_183_34" x1="171.58" y1="102" x2="171.58" y2="390.5" gradientUnits="userSpaceOnUse">
         <stop stopColor="#EEEDEA" />
         <stop offset="1" stopColor="#EE6495" />
       </linearGradient>
-      <linearGradient
-        id="paint3_linear_183_34"
-        x1="204"
-        y1="59.75"
-        x2="204"
-        y2="348.25"
-        gradientUnits="userSpaceOnUse"
-      >
+      <linearGradient id="paint3_linear_183_34" x1="204" y1="59.75" x2="204" y2="348.25" gradientUnits="userSpaceOnUse">
         <stop stopColor="#EEEDEA" />
         <stop offset="1" stopColor="#EE6495" />
       </linearGradient>

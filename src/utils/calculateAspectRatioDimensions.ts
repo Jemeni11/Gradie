@@ -1,11 +1,8 @@
 import { downloadAspectRatios } from "@/constants";
+
 import type { AspectRatio } from "@/types";
 
-const calculateAspectRatioDimensions = (
-  aspectRatio: AspectRatio,
-  knownDimension: "width" | "height",
-  value: number,
-) => {
+const calculateAspectRatioDimensions = (aspectRatio: AspectRatio, knownDimension: "width" | "height", value: number) => {
   const ratio = downloadAspectRatios[aspectRatio].ratio;
 
   if (knownDimension === "width") {

@@ -1,4 +1,10 @@
 import { useAtomValue, useAtom } from "jotai";
+
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { gradieModes, gradientTypes, gradientPositions } from "@/constants";
 import {
   convertedPaletteAtom,
   gradieModeAtom,
@@ -12,24 +18,9 @@ import {
   imageAtom,
   loadingStateAtom,
 } from "@/store";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Input } from "@/components/ui/input";
-import { gradieModes, gradientTypes, gradientPositions } from "@/constants";
-import {
-  GradieMode,
-  GradientPosition,
-  GradientType,
-  RadialShape,
-} from "@/types";
+import { GradieMode, GradientPosition, GradientType, RadialShape } from "@/types";
 import { capitalizeFirstLetter } from "@/utils";
+
 import GradientArea from "./gradient-area";
 import Loader from "./loader";
 
@@ -53,7 +44,7 @@ export default function GradientPanel() {
 
   if (image.length === 0 || !palette) {
     return (
-      <div className="border-gradie-2 flex h-fit w-full flex-col items-center gap-4 rounded-lg border border-solid py-4">
+      <div className="flex h-fit w-full flex-col items-center gap-4 rounded-lg border border-solid border-gradie-2 py-4">
         Upload an image!
       </div>
     );
@@ -69,10 +60,7 @@ export default function GradientPanel() {
 
       <div>
         <h2 className="mb-4">Gradie Mode</h2>
-        <Select
-          value={gradieMode}
-          onValueChange={(value) => setGradieMode(value as GradieMode)}
-        >
+        <Select value={gradieMode} onValueChange={(value) => setGradieMode(value as GradieMode)}>
           <SelectTrigger className="w-full">
             <SelectValue aria-label={gradieMode}>{gradieMode}</SelectValue>
           </SelectTrigger>
@@ -93,7 +81,7 @@ export default function GradientPanel() {
         <h2 className="mb-4">Gradient Type</h2>
         <ToggleGroup
           type="single"
-          className="border-gradie-2 flex w-full border border-solid"
+          className="flex w-full border border-solid border-gradie-2"
           value={gradientType}
           onValueChange={(value) => {
             if (value) {
@@ -102,12 +90,7 @@ export default function GradientPanel() {
           }}
         >
           {gradientTypes.map((type) => (
-            <ToggleGroupItem
-              key={type}
-              value={type}
-              aria-label={`Toggle ${type}`}
-              className="flex-1 cursor-pointer"
-            >
+            <ToggleGroupItem key={type} value={type} aria-label={`Toggle ${type}`} className="flex-1 cursor-pointer">
               <span className="font-medium">{capitalizeFirstLetter(type)}</span>
             </ToggleGroupItem>
           ))}
@@ -117,12 +100,7 @@ export default function GradientPanel() {
       {gradientType !== "linear" && (
         <div>
           <label htmlFor="gradientPosition">Postion</label>
-          <Select
-            value={gradientPosition}
-            onValueChange={(value) =>
-              setGradientPosition(value as GradientPosition)
-            }
-          >
+          <Select value={gradientPosition} onValueChange={(value) => setGradientPosition(value as GradientPosition)}>
             <SelectTrigger id="gradientPosition" className="mt-4 w-full">
               <SelectValue>{gradientPosition}</SelectValue>
             </SelectTrigger>
@@ -166,27 +144,15 @@ export default function GradientPanel() {
           <ToggleGroup
             id="radialShape"
             type="single"
-            className="border-gradie-2 mt-4 flex w-full border border-solid"
+            className="mt-4 flex w-full border border-solid border-gradie-2"
             value={radialShape}
             onValueChange={(value) => setRadialShape(value as RadialShape)}
           >
-            <ToggleGroupItem
-              value="circle"
-              aria-label="Toggle Circle"
-              className="flex-1 cursor-pointer"
-            >
-              <span className="font-medium">
-                {capitalizeFirstLetter("circle")}
-              </span>
+            <ToggleGroupItem value="circle" aria-label="Toggle Circle" className="flex-1 cursor-pointer">
+              <span className="font-medium">{capitalizeFirstLetter("circle")}</span>
             </ToggleGroupItem>
-            <ToggleGroupItem
-              value="ellipse"
-              aria-label="Toggle Ellipse"
-              className="flex-1 cursor-pointer"
-            >
-              <span className="font-medium">
-                {capitalizeFirstLetter("ellipse")}
-              </span>
+            <ToggleGroupItem value="ellipse" aria-label="Toggle Ellipse" className="flex-1 cursor-pointer">
+              <span className="font-medium">{capitalizeFirstLetter("ellipse")}</span>
             </ToggleGroupItem>
           </ToggleGroup>
         </div>

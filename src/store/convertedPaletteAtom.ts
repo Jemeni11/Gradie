@@ -1,7 +1,9 @@
 import { atom } from "jotai";
-import { paletteAtom } from "./paletteAtom";
-import { colorFormatAtom } from "./colorFormatAtom";
+
 import { colorConverter } from "@/utils";
+
+import { colorFormatAtom } from "./colorFormatAtom";
+import { paletteAtom } from "./paletteAtom";
 
 export const convertedPaletteAtom = atom((get) => {
   const palette = get(paletteAtom);

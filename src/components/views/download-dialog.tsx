@@ -1,11 +1,9 @@
-import { useAtomValue, useAtom } from "jotai";
 import { useMemo, useRef, useState, useCallback } from "react";
+
+import { useAtomValue, useAtom } from "jotai";
 import { domToCanvas, domToSvg } from "modern-screenshot";
-import {
-  gradientStringAtom,
-  originalImageSizeAtom,
-  downloadConfigAtom,
-} from "@/store";
+import { toast } from "sonner";
+
 import {
   Dialog,
   DialogContent,
@@ -16,40 +14,21 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import type {
-  DimensionMode,
-  DimensionPreset,
-  DownloadConfig,
-  FileFormat,
-  AspectRatio,
-} from "@/types";
-import {
-  supportedDownloadFormats,
-  dimensionModes,
-  dimensionPresets,
-  downloadAspectRatios,
-} from "@/constants";
-import { useWindowSize } from "@/hooks/useWindowSize";
-import { capitalizeFirstLetter } from "@/utils";
-import GradientPreview from "./gradient-preview";
-import { toast } from "sonner";
-import { trackEvent } from "@/utils";
-import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import {
-  applyCanvasDithering,
-  downsampleCanvas,
-  getGradientExportScale,
-} from "@/utils/colorBandingFix";
+import { supportedDownloadFormats, dimensionModes, dimensionPresets, downloadAspectRatios } from "@/constants";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import { cn } from "@/lib/utils";
+import { gradientStringAtom, originalImageSizeAtom, downloadConfigAtom } from "@/store";
+import { capitalizeFirstLetter } from "@/utils";
+import { trackEvent } from "@/utils";
+import { applyCanvasDithering, downsampleCanvas, getGradientExportScale } from "@/utils/colorBandingFix";
+
+import { Button } from "../ui/button";
+import GradientPreview from "./gradient-preview";
+
+import type { DimensionMode, DimensionPreset, DownloadConfig, FileFormat, AspectRatio } from "@/types";
 
 export default function DownloadDialog() {
   const gradientString = useAtomValue(gradientStringAtom);
@@ -61,30 +40,25 @@ export default function DownloadDialog() {
   const { height: browserHeight, width: browserWidth } = useWindowSize();
 
   // Helper to calculate dimensions based on aspect ratio
-  const calculateAspectRatioDimensions = useCallback(
-    (aspectRatio: AspectRatio, width: number, height: number) => {
-      const ratio = downloadAspectRatios[aspectRatio].ratio;
+  const calculateAspectRatioDimensions = useCallback((aspectRatio: AspectRatio, width: number, height: number) => {
+    const ratio = downloadAspectRatios[aspectRatio].ratio;
 
-      // Use whichever dimension is set (non-zero) to calculate the other
-      if (width > 0 && height <= 0) {
-        return { width, height: Math.round(width / ratio) };
-      } else if (height > 0 && width <= 0) {
-        return { width: Math.round(height * ratio), height };
-      } else if (width > 0 && height > 0) {
-        // Both are set, use width as primary and calculate height
-        return { width, height: Math.round(width / ratio) };
-      }
+    // Use whichever dimension is set (non-zero) to calculate the other
+    if (width > 0 && height <= 0) {
+      return { width, height: Math.round(width / ratio) };
+    } else if (height > 0 && width <= 0) {
+      return { width: Math.round(height * ratio), height };
+    } else if (width > 0 && height > 0) {
+      // Both are set, use width as primary and calculate height
+      return { width, height: Math.round(width / ratio) };
+    }
 
-      // Neither dimension is set, use default
-      return { width: 1920, height: Math.round(1920 / ratio) };
-    },
-    [],
-  );
+    // Neither dimension is set, use default
+    return { width: 1920, height: Math.round(1920 / ratio) };
+  }, []);
 
   const exportDimensions = useMemo(() => {
-    const preset = dimensionPresets.find(
-      (p) => p.key === downloadConfig.preset,
-    );
+    const preset = dimensionPresets.find((p) => p.key === downloadConfig.preset);
 
     switch (downloadConfig.dimensionMode) {
       case "viewport":
@@ -95,28 +69,16 @@ export default function DownloadDialog() {
           height: originalImageSize.height || 800,
         };
       case "preset":
-        return preset
-          ? { width: preset.width, height: preset.height }
-          : { width: downloadConfig.width, height: downloadConfig.height };
+        return preset ? { width: preset.width, height: preset.height } : { width: downloadConfig.width, height: downloadConfig.height };
       case "aspect-ratio":
         return downloadConfig.aspectRatio
-          ? calculateAspectRatioDimensions(
-              downloadConfig.aspectRatio,
-              downloadConfig.width,
-              downloadConfig.height,
-            )
+          ? calculateAspectRatioDimensions(downloadConfig.aspectRatio, downloadConfig.width, downloadConfig.height)
           : { width: downloadConfig.width, height: downloadConfig.height };
       case "custom":
       default:
         return { width: downloadConfig.width, height: downloadConfig.height };
     }
-  }, [
-    downloadConfig,
-    browserWidth,
-    browserHeight,
-    originalImageSize,
-    calculateAspectRatioDimensions,
-  ]);
+  }, [downloadConfig, browserWidth, browserHeight, originalImageSize, calculateAspectRatioDimensions]);
 
   // Generic config updater
   const updateConfig = useCallback(
@@ -135,9 +97,7 @@ export default function DownloadDialog() {
     setIsDownloading(true);
 
     try {
-      const fileFormatConfig = supportedDownloadFormats.find(
-        (f) => f.name === downloadConfig.format,
-      );
+      const fileFormatConfig = supportedDownloadFormats.find((f) => f.name === downloadConfig.format);
 
       if (!fileFormatConfig) {
         throw new Error(`Unsupported format: ${downloadConfig.format}`);
@@ -145,9 +105,7 @@ export default function DownloadDialog() {
 
       const width = Math.max(1, Math.round(exportDimensions.width));
       const height = Math.max(1, Math.round(exportDimensions.height));
-      const quality = fileFormatConfig.quality
-        ? downloadConfig.quality / 100
-        : undefined;
+      const quality = fileFormatConfig.quality ? downloadConfig.quality / 100 : undefined;
       // Explicitly reset `background` shorthand so the `backgroundImage`
       // longhand isn't silently overridden if the preview component ever
       // switches from `backgroundImage` to the `background` shorthand.
@@ -199,9 +157,7 @@ export default function DownloadDialog() {
       });
     } catch (error) {
       console.error("Download failed:", error);
-      toast.error(
-        `Download failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      toast.error(`Download failed: ${error instanceof Error ? error.message : "Unknown error"}`);
       trackEvent("Download Failed", {
         reason: `${error instanceof Error ? error.message : error}`,
       });
@@ -213,9 +169,7 @@ export default function DownloadDialog() {
   const handleDimensionModeChange = useCallback(
     (newMode: DimensionMode) => {
       const updates: Partial<DownloadConfig> = { dimensionMode: newMode };
-      const preset = dimensionPresets.find(
-        (p) => p.key === downloadConfig.preset,
-      );
+      const preset = dimensionPresets.find((p) => p.key === downloadConfig.preset);
 
       switch (newMode) {
         case "viewport":
@@ -250,13 +204,7 @@ export default function DownloadDialog() {
 
       updateConfig(updates);
     },
-    [
-      downloadConfig,
-      browserWidth,
-      browserHeight,
-      originalImageSize,
-      updateConfig,
-    ],
+    [downloadConfig, browserWidth, browserHeight, originalImageSize, updateConfig],
   );
 
   const handlePresetChange = useCallback(
@@ -279,9 +227,7 @@ export default function DownloadDialog() {
 
   const updateFilename = useCallback(
     (newFilename: string) => {
-      const sanitized = newFilename
-        .replace(/[<>:"/\\|?*]/g, "")
-        .substring(0, 255);
+      const sanitized = newFilename.replace(/[<>:"/\\|?*]/g, "").substring(0, 255);
       updateConfig({ filename: sanitized });
     },
     [updateConfig],
@@ -289,23 +235,14 @@ export default function DownloadDialog() {
 
   const handleAspectRatioChange = useCallback(
     (newRatio: AspectRatio) => {
-      const dimensions = calculateAspectRatioDimensions(
-        newRatio,
-        downloadConfig.width,
-        downloadConfig.height,
-      );
+      const dimensions = calculateAspectRatioDimensions(newRatio, downloadConfig.width, downloadConfig.height);
 
       updateConfig({
         aspectRatio: newRatio,
         ...dimensions,
       });
     },
-    [
-      downloadConfig.width,
-      downloadConfig.height,
-      calculateAspectRatioDimensions,
-      updateConfig,
-    ],
+    [downloadConfig.width, downloadConfig.height, calculateAspectRatioDimensions, updateConfig],
   );
 
   const handleAspectRatioDimensionChange = useCallback(
@@ -317,9 +254,7 @@ export default function DownloadDialog() {
 
       const ratio = downloadAspectRatios[downloadConfig.aspectRatio].ratio;
       const dimensions =
-        field === "width"
-          ? { width: value, height: Math.round(value / ratio) }
-          : { width: Math.round(value * ratio), height: value };
+        field === "width" ? { width: value, height: Math.round(value / ratio) } : { width: Math.round(value * ratio), height: value };
 
       updateConfig(dimensions);
     },
@@ -327,15 +262,9 @@ export default function DownloadDialog() {
   );
 
   // Get current file format config
-  const currentFileFormat = useMemo(
-    () =>
-      supportedDownloadFormats.find((f) => f.name === downloadConfig.format),
-    [downloadConfig.format],
-  );
+  const currentFileFormat = useMemo(() => supportedDownloadFormats.find((f) => f.name === downloadConfig.format), [downloadConfig.format]);
 
-  const quality = currentFileFormat?.quality
-    ? `${downloadConfig.quality}%`
-    : "N/A";
+  const quality = currentFileFormat?.quality ? `${downloadConfig.quality}%` : "N/A";
 
   const exportOptionsFieldArray = [
     {
@@ -359,7 +288,7 @@ export default function DownloadDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <button
-          className="border-gradie-2 bg-gradie-2 w-full flex-1 cursor-pointer rounded-lg border border-solid px-4 py-2 font-bold text-white"
+          className="w-full flex-1 cursor-pointer rounded-lg border border-solid border-gradie-2 bg-gradie-2 px-4 py-2 font-bold text-white"
           type="button"
         >
           <span>Download</span>
@@ -367,47 +296,29 @@ export default function DownloadDialog() {
       </DialogTrigger>
       <DialogContent className="md:max-h-auto h-full max-h-[80%] w-screen overflow-y-scroll md:min-h-screen md:w-[80vw] md:overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-semibold">
-            Download gradient
-          </DialogTitle>
-          <DialogDescription className="hidden">
-            Gradient Download Dialog
-          </DialogDescription>
+          <DialogTitle className="text-3xl font-semibold">Download gradient</DialogTitle>
+          <DialogDescription className="hidden">Gradient Download Dialog</DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8">
           <div className="flex h-full w-full flex-col justify-between gap-6">
             <GradientPreview ref={previewRef} gradient={gradientString} />
-            <ExportOptionsField
-              content={exportOptionsFieldArray}
-              className="flex-1"
-            />
+            <ExportOptionsField content={exportOptionsFieldArray} className="flex-1" />
           </div>
           <div className="min-h-full px-4 md:max-h-[60vh] md:overflow-y-auto">
             <div className="flex w-full flex-col gap-4 pb-8">
               {/* File Format Selection */}
               <div>
                 <label htmlFor="fileformat">File format</label>
-                <Select
-                  value={downloadConfig.format}
-                  onValueChange={(value: FileFormat) =>
-                    updateConfig({ format: value })
-                  }
-                >
+                <Select value={downloadConfig.format} onValueChange={(value: FileFormat) => updateConfig({ format: value })}>
                   <SelectTrigger id="fileformat" className="mt-4 w-full">
-                    <SelectValue aria-label={downloadConfig.format}>
-                      {downloadConfig.format.toUpperCase()}
-                    </SelectValue>
+                    <SelectValue aria-label={downloadConfig.format}>{downloadConfig.format.toUpperCase()}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {supportedDownloadFormats.map((format) => (
                       <SelectItem key={format.name} value={format.name}>
                         <div className="flex flex-col">
                           <span>{format.name.toUpperCase()}</span>
-                          <small className="text-gray-500">
-                            {format.transparency
-                              ? "Supports transparency"
-                              : "No transparency"}
-                          </small>
+                          <small className="text-gray-500">{format.transparency ? "Supports transparency" : "No transparency"}</small>
                         </div>
                       </SelectItem>
                     ))}
@@ -418,14 +329,10 @@ export default function DownloadDialog() {
               {/* Quality Slider */}
               {currentFileFormat?.quality && (
                 <div>
-                  <label htmlFor="quality">
-                    Quality: {downloadConfig.quality}%
-                  </label>
+                  <label htmlFor="quality">Quality: {downloadConfig.quality}%</label>
                   <Slider
                     value={[downloadConfig.quality]}
-                    onValueChange={(values) =>
-                      updateConfig({ quality: values[0] })
-                    }
+                    onValueChange={(values) => updateConfig({ quality: values[0] })}
                     min={10}
                     max={100}
                     step={5}
@@ -448,32 +355,23 @@ export default function DownloadDialog() {
                     className="w-full pr-14"
                     placeholder="gradie-gradient"
                   />
-                  <small className="absolute right-4 font-light">
-                    {255 - downloadConfig.filename.length}
-                  </small>
+                  <small className="absolute right-4 font-light">{255 - downloadConfig.filename.length}</small>
                 </div>
               </div>
 
               {/* Dimension Mode Selection */}
               <div>
                 <label htmlFor="dimensionMode">Dimension Mode</label>
-                <Select
-                  value={downloadConfig.dimensionMode}
-                  onValueChange={handleDimensionModeChange}
-                >
+                <Select value={downloadConfig.dimensionMode} onValueChange={handleDimensionModeChange}>
                   <SelectTrigger id="dimensionMode" className="mt-4 w-full">
-                    <SelectValue aria-label={downloadConfig.dimensionMode}>
-                      {downloadConfig.dimensionMode}
-                    </SelectValue>
+                    <SelectValue aria-label={downloadConfig.dimensionMode}>{downloadConfig.dimensionMode}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {dimensionModes.map((mode) => (
                       <SelectItem key={mode.name} value={mode.name}>
                         <div className="flex flex-col py-1">
                           <span className="font-medium">{mode.name}</span>
-                          <small className="text-gray-500">
-                            {mode.definition}
-                          </small>
+                          <small className="text-gray-500">{mode.definition}</small>
                         </div>
                       </SelectItem>
                     ))}
@@ -486,9 +384,7 @@ export default function DownloadDialog() {
                 <div className="grid w-full grid-cols-2 gap-4">
                   {["width", "height"].map((field) => (
                     <div key={field}>
-                      <label htmlFor={`custom${capitalizeFirstLetter(field)}`}>
-                        {capitalizeFirstLetter(field)}
-                      </label>
+                      <label htmlFor={`custom${capitalizeFirstLetter(field)}`}>{capitalizeFirstLetter(field)}</label>
                       <Input
                         className="mt-4"
                         id={`custom${capitalizeFirstLetter(field)}`}
@@ -497,14 +393,7 @@ export default function DownloadDialog() {
                         max={5000}
                         placeholder={`${capitalizeFirstLetter(field)} in pixels`}
                         inputMode="numeric"
-                        value={
-                          downloadConfig[
-                            field as keyof Pick<
-                              DownloadConfig,
-                              "width" | "height"
-                            >
-                          ]
-                        }
+                        value={downloadConfig[field as keyof Pick<DownloadConfig, "width" | "height">]}
                         onChange={(e) =>
                           updateConfig({
                             [field]: parseInt(e.target.value) || 0,
@@ -520,15 +409,10 @@ export default function DownloadDialog() {
               {downloadConfig.dimensionMode === "preset" && (
                 <div>
                   <label htmlFor="preset">Preset</label>
-                  <Select
-                    value={downloadConfig.preset}
-                    onValueChange={handlePresetChange}
-                  >
+                  <Select value={downloadConfig.preset} onValueChange={handlePresetChange}>
                     <SelectTrigger id="preset" className="mt-4 w-full">
                       <SelectValue aria-label={downloadConfig.preset}>
-                        {dimensionPresets.find(
-                          (p) => p.key === downloadConfig.preset,
-                        )?.label ?? downloadConfig.preset}
+                        {dimensionPresets.find((p) => p.key === downloadConfig.preset)?.label ?? downloadConfig.preset}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
@@ -536,9 +420,7 @@ export default function DownloadDialog() {
                         <SelectItem key={preset.key} value={preset.key}>
                           <div className="flex flex-col py-1">
                             <span className="font-medium">{preset.label}</span>
-                            <small className="text-gray-500">
-                              {preset.useCases.join(", ")}
-                            </small>
+                            <small className="text-gray-500">{preset.useCases.join(", ")}</small>
                           </div>
                         </SelectItem>
                       ))}
@@ -551,40 +433,22 @@ export default function DownloadDialog() {
               {downloadConfig.dimensionMode === "aspect-ratio" && (
                 <>
                   <div>
-                    <label
-                      htmlFor="aspectRatio"
-                      className="mb-2 block text-sm font-medium"
-                    >
+                    <label htmlFor="aspectRatio" className="mb-2 block text-sm font-medium">
                       Aspect Ratio
                     </label>
-                    <Select
-                      value={downloadConfig.aspectRatio || "landscape"}
-                      onValueChange={handleAspectRatioChange}
-                    >
+                    <Select value={downloadConfig.aspectRatio || "landscape"} onValueChange={handleAspectRatioChange}>
                       <SelectTrigger id="aspectRatio" className="w-full">
-                        <SelectValue>
-                          {
-                            downloadAspectRatios[
-                              downloadConfig.aspectRatio || "landscape"
-                            ].label
-                          }
-                        </SelectValue>
+                        <SelectValue>{downloadAspectRatios[downloadConfig.aspectRatio || "landscape"].label}</SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(downloadAspectRatios).map(
-                          ([key, ratio]) => (
-                            <SelectItem key={key} value={key}>
-                              <div className="flex flex-col py-1">
-                                <span className="font-medium">
-                                  {ratio.label}
-                                </span>
-                                <small className="text-gray-500">
-                                  Ratio: {ratio.ratio.toFixed(3)}
-                                </small>
-                              </div>
-                            </SelectItem>
-                          ),
-                        )}
+                        {Object.entries(downloadAspectRatios).map(([key, ratio]) => (
+                          <SelectItem key={key} value={key}>
+                            <div className="flex flex-col py-1">
+                              <span className="font-medium">{ratio.label}</span>
+                              <small className="text-gray-500">Ratio: {ratio.ratio.toFixed(3)}</small>
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -603,10 +467,7 @@ export default function DownloadDialog() {
                       },
                     ].map(({ field, label, subtitle }) => (
                       <div key={field}>
-                        <label
-                          htmlFor={`aspect${capitalizeFirstLetter(field)}`}
-                          className="mb-2 block text-sm font-medium"
-                        >
+                        <label htmlFor={`aspect${capitalizeFirstLetter(field)}`} className="mb-2 block text-sm font-medium">
                           {label} <small>{subtitle}</small>
                         </label>
                         <Input
@@ -616,19 +477,13 @@ export default function DownloadDialog() {
                           max={5000}
                           placeholder={`${label} in pixels`}
                           value={downloadConfig[field]}
-                          onChange={(e) =>
-                            handleAspectRatioDimensionChange(
-                              field,
-                              parseInt(e.target.value) || 0,
-                            )
-                          }
+                          onChange={(e) => handleAspectRatioDimensionChange(field, parseInt(e.target.value) || 0)}
                         />
                       </div>
                     ))}
                   </div>
                   <small className="text-gray-500">
-                    Set either width or height - the other will be calculated
-                    automatically based on the aspect ratio.
+                    Set either width or height - the other will be calculated automatically based on the aspect ratio.
                   </small>
                 </>
               )}
@@ -682,10 +537,7 @@ async function createRasterDownloadUrl({
     ...options,
     scale,
   });
-  const outputCanvas =
-    scale > 1
-      ? downsampleCanvas(capturedCanvas, width, height)
-      : capturedCanvas;
+  const outputCanvas = scale > 1 ? downsampleCanvas(capturedCanvas, width, height) : capturedCanvas;
 
   // Release the potentially large supersampled canvas early
   if (scale > 1) {
@@ -704,11 +556,7 @@ async function createRasterDownloadUrl({
   return URL.createObjectURL(blob);
 }
 
-function canvasToBlob(
-  canvas: HTMLCanvasElement,
-  mimeType: string,
-  quality?: number,
-): Promise<Blob> {
+function canvasToBlob(canvas: HTMLCanvasElement, mimeType: string, quality?: number): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
@@ -737,16 +585,11 @@ function ExportOptionsField({
 }) {
   return (
     <div className={cn("flow-root w-full", className)}>
-      <dl className="md:divide-gradie-2 -my-3 flex w-full flex-row justify-between text-sm md:block md:divide-y">
+      <dl className="-my-3 flex w-full flex-row justify-between text-sm md:block md:divide-y md:divide-gradie-2">
         {content.map((datum) => (
-          <div
-            key={datum.id}
-            className="grid grid-cols-1 gap-1 py-3 md:grid-cols-3 md:gap-4"
-          >
+          <div key={datum.id} className="grid grid-cols-1 gap-1 py-3 md:grid-cols-3 md:gap-4">
             <dt className="font-medium text-gray-900">{datum.title}</dt>
-            <dd className="break-words text-gray-700 md:col-span-2">
-              {datum.value}
-            </dd>
+            <dd className="break-words text-gray-700 md:col-span-2">{datum.value}</dd>
           </div>
         ))}
       </dl>

@@ -4,36 +4,13 @@ export interface ValidatedFile {
   status: string[];
 }
 
-export type ColorFormat =
-  | "hsl"
-  | "hex"
-  | "rgb"
-  | "hwb"
-  | "lab"
-  | "lch"
-  | "oklab"
-  | "oklch";
+export type ColorFormat = "hsl" | "hex" | "rgb" | "hwb" | "lab" | "lch" | "oklab" | "oklch";
 
-export type GradieMode =
-  | "Default"
-  | "Surprise Me!"
-  | "Bold Pop"
-  | "Soft Sweep"
-  | "Full Blend"
-  | "Custom";
+export type GradieMode = "Default" | "Surprise Me!" | "Bold Pop" | "Soft Sweep" | "Full Blend" | "Custom";
 
 export type GradientType = "linear" | "radial" | "conic";
 
-export type GradientPosition =
-  | "left"
-  | "center"
-  | "right"
-  | "top"
-  | "bottom"
-  | "left top"
-  | "left bottom"
-  | "right top"
-  | "right bottom";
+export type GradientPosition = "left" | "center" | "right" | "top" | "bottom" | "left top" | "left bottom" | "right top" | "right bottom";
 
 export type RadialShape = "circle" | "ellipse";
 
@@ -67,14 +44,7 @@ export type DimensionPresetObjectArray = {
   category: PresetCategory;
 }[];
 
-export type AspectRatio =
-  | "square"
-  | "landscape"
-  | "portrait"
-  | "widescreen"
-  | "classic"
-  | "golden"
-  | "cinematic";
+export type AspectRatio = "square" | "landscape" | "portrait" | "widescreen" | "classic" | "golden" | "cinematic";
 
 export type DimensionMode =
   // Choose from predefined sizes

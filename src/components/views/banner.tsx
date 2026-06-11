@@ -1,26 +1,19 @@
 import { SVGProps } from "react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+
 import AnalyticsDialogContent from "./analytics-dialog-content";
 
-export default function Banner({
-  onEnable,
-  onDismiss,
-}: {
-  onEnable: () => void;
-  onDismiss: () => void;
-}) {
+export default function Banner({ onEnable, onDismiss }: { onEnable: () => void; onDismiss: () => void }) {
   return (
-    <div className="border-border bg-muted text-muted-foreground relative isolate border py-3 text-sm shadow-sm">
+    <div className="relative isolate border border-border bg-muted py-3 text-sm text-muted-foreground shadow-sm">
       <div className="mx-auto flex w-full max-w-7xl flex-col flex-wrap items-center justify-between gap-4 px-4 py-2 md:flex-row md:gap-2 md:px-8 md:py-0">
         <p className="w-full text-center md:w-auto">
-          Gradie can collect anonymous usage data to help improve the app. It's
-          off by default.{" "}
+          Gradie can collect anonymous usage data to help improve the app. It's off by default.{" "}
           <Dialog>
             <DialogTrigger asChild>
-              <span className="hover:text-foreground cursor-pointer font-medium underline underline-offset-4">
-                Learn more
-              </span>
+              <span className="cursor-pointer font-medium underline underline-offset-4 hover:text-foreground">Learn more</span>
             </DialogTrigger>
             <AnalyticsDialogContent />
           </Dialog>
@@ -30,7 +23,7 @@ export default function Banner({
           <Button
             onClick={onEnable}
             aria-label="Enable anonymous analytics"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex cursor-pointer items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium shadow-sm transition-colors"
+            className="inline-flex cursor-pointer items-center justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
           >
             Enable
           </Button>
@@ -39,7 +32,7 @@ export default function Banner({
             onClick={onDismiss}
             variant="outline"
             aria-label="Dismiss banner"
-            className="border-border bg-background hover:bg-muted inline-flex cursor-pointer items-center justify-center rounded-md border p-1.5"
+            className="inline-flex cursor-pointer items-center justify-center rounded-md border border-border bg-background p-1.5 hover:bg-muted"
           >
             <Close />
           </Button>
@@ -60,11 +53,7 @@ function Close(props: SVGProps<SVGSVGElement>) {
       className="size-5"
       {...props}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6 18L18 6M6 6l12 12"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
 }

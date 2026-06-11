@@ -1,6 +1,7 @@
 import React from "react";
-import { cn } from "@/lib/utils";
+
 import { ImageIcon } from "@/icons";
+import { cn } from "@/lib/utils";
 
 type Props = {
   dragIsOver: boolean;
@@ -46,7 +47,7 @@ export default function ImageUploadDropArea({
     <div
       ref={dropAreaRef}
       className={cn(
-        "border-gradie-2 relative flex flex-col items-center gap-4 rounded-lg border-2 border-dashed py-4",
+        "relative flex flex-col items-center gap-4 rounded-lg border-2 border-dashed border-gradie-2 py-4",
         dragIsOver ? "bg-gradie-2" : "bg-transparent",
         className,
       )}
@@ -78,13 +79,7 @@ export default function ImageUploadDropArea({
           ) : (
             <div className="flex flex-wrap items-center justify-center gap-1">
               <span>Upload via drag,</span>
-              <label
-                htmlFor="ImageUpload"
-                role="button"
-                className="cursor-pointer text-[#1388f2]"
-                tabIndex={0}
-                onKeyDown={handleKeyDown}
-              >
+              <label htmlFor="ImageUpload" role="button" className="cursor-pointer text-[#1388f2]" tabIndex={0} onKeyDown={handleKeyDown}>
                 file select
               </label>
               <span>, or paste.</span>

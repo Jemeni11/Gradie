@@ -1,7 +1,7 @@
 export default function Hero() {
   return (
     <main className="mt-16">
-      <h1 className="font-aladin mx-auto mb-4 w-fit scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+      <h1 className="mx-auto mb-4 w-fit scroll-m-20 font-aladin text-4xl font-extrabold tracking-tight lg:text-5xl">
         From Image to Gradient
       </h1>
       <p className="mx-auto mb-2 max-w-2xs text-center text-lg leading-7 lg:max-w-96 [&:not(:first-child)]:mt-6">

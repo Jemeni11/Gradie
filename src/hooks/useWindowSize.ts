@@ -17,12 +17,8 @@ const IS_SERVER = typeof window === "undefined";
 // SSR version of useWindowSize.
 export function useWindowSize(options: UseWindowSizeOptions<false>): WindowSize;
 // CSR version of useWindowSize.
-export function useWindowSize(
-  options?: Partial<UseWindowSizeOptions<true>>,
-): WindowSize<number>;
-export function useWindowSize(
-  options: Partial<UseWindowSizeOptions<boolean>> = {},
-): WindowSize | WindowSize<number> {
+export function useWindowSize(options?: Partial<UseWindowSizeOptions<true>>): WindowSize<number>;
+export function useWindowSize(options: Partial<UseWindowSizeOptions<boolean>> = {}): WindowSize | WindowSize<number> {
   let { initializeWithValue = true } = options;
   if (IS_SERVER) {
     initializeWithValue = false;

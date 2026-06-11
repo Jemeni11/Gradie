@@ -1,3 +1,4 @@
+import { trackEvent, initAnalytics } from "./analytics";
 import calculateAspectRatioDimensions from "./calculateAspectRatioDimensions";
 import capitalizeFirstLetter from "./capitalizeFirstLetter";
 import colorConverter from "./colorConverter";
@@ -6,7 +7,6 @@ import generateUUID from "./generateUUID";
 import getMostContrastingColor from "./getMostContrastingColor";
 import getMostDifferentHue from "./getMostDifferentHue";
 import getRandomFromSlice from "./getRandomFromSlice";
-import { trackEvent, initAnalytics } from "./analytics";
 
 export {
   calculateAspectRatioDimensions,

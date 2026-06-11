@@ -1,16 +1,9 @@
-import type { ValidatedFile } from "@/types";
 import { DocumentIcon, DeleteIcon } from "@/icons";
 import { cn } from "@/lib/utils";
 
-export default function ImageInfo({
-  file,
-  deleteHandler,
-  success,
-}: {
-  file: ValidatedFile;
-  deleteHandler: () => void;
-  success: boolean;
-}) {
+import type { ValidatedFile } from "@/types";
+
+export default function ImageInfo({ file, deleteHandler, success }: { file: ValidatedFile; deleteHandler: () => void; success: boolean }) {
   return (
     <div
       key={file.key}
@@ -22,16 +15,10 @@ export default function ImageInfo({
       <div className="flex">
         <DocumentIcon className="mr-3.5 min-w-5" aria-hidden="true" />
         <p className="font-semibold" title={file.file.name}>
-          {file.file.name.length > 40
-            ? file.file.name.substring(0, 35) + "..."
-            : file.file.name}
+          {file.file.name.length > 40 ? file.file.name.substring(0, 35) + "..." : file.file.name}
         </p>
       </div>
-      <button
-        onClick={deleteHandler}
-        aria-label="Remove uploaded image"
-        className="rounded-full p-2 hover:cursor-pointer"
-      >
+      <button onClick={deleteHandler} aria-label="Remove uploaded image" className="rounded-full p-2 hover:cursor-pointer">
         <DeleteIcon aria-hidden="true" />
       </button>
     </div>

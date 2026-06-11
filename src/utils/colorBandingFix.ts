@@ -13,11 +13,7 @@ export function getGradientExportScale(width: number, height: number): number {
   return Math.max(1, Math.min(DEFAULT_SUPERSAMPLE_SCALE, cappedScale));
 }
 
-export function downsampleCanvas(
-  sourceCanvas: HTMLCanvasElement,
-  width: number,
-  height: number,
-): HTMLCanvasElement {
+export function downsampleCanvas(sourceCanvas: HTMLCanvasElement, width: number, height: number): HTMLCanvasElement {
   const outputCanvas = document.createElement("canvas");
   outputCanvas.width = width;
   outputCanvas.height = height;
@@ -34,10 +30,7 @@ export function downsampleCanvas(
   return outputCanvas;
 }
 
-export function applyCanvasDithering(
-  canvas: HTMLCanvasElement,
-  amount = DEFAULT_DITHER_AMOUNT,
-): void {
+export function applyCanvasDithering(canvas: HTMLCanvasElement, amount = DEFAULT_DITHER_AMOUNT): void {
   const context = canvas.getContext("2d");
   if (!context) {
     throw new Error("Could not read export canvas");
@@ -67,10 +60,7 @@ export function applyCanvasDithering(
 }
 
 function hashNoise(x: number, y: number, channel = 0): number {
-  let hash =
-    Math.imul(x, 374761393) ^
-    Math.imul(y, 668265263) ^
-    Math.imul(channel, 2147483647);
+  let hash = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(channel, 2147483647);
   hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
   return ((hash ^ (hash >>> 16)) >>> 0) / 4_294_967_295;
 }

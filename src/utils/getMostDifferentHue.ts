@@ -1,11 +1,8 @@
 import Color from "colorjs.io";
+
 import { ColorFormat } from "@/types";
 
-export default function getMostDifferentHue(
-  palette: string[],
-  base: string,
-  format: ColorFormat,
-): string {
+export default function getMostDifferentHue(palette: string[], base: string, format: ColorFormat): string {
   const baseColor = new Color(base).to("oklch");
   let maxDeltaH = -1;
   let resultColor = palette[0];

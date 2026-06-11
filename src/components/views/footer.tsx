@@ -19,69 +19,37 @@ export default function Footer() {
             href="https://github.com/Jemeni11/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gradie-2 font-aladin cursor-pointer text-xl font-extrabold 2xl:mb-1 2xl:text-3xl"
+            className="cursor-pointer font-aladin text-xl font-extrabold text-gradie-2 2xl:mb-1 2xl:text-3xl"
           >
             @Jemeni11
           </a>
         </span>
       </div>
       <div className="flex items-center gap-x-6 lg:gap-x-4">
-        <a
-          href="https://www.buymeacoffee.com/jemeni11"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://www.buymeacoffee.com/jemeni11" target="_blank" rel="noopener noreferrer">
           <BuyMeACoffeeIcon />
         </a>
-        <a
-          href="https://github.com/sponsors/Jemeni11/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://github.com/sponsors/Jemeni11/" target="_blank" rel="noopener noreferrer">
           <GitHubSponsorsIcon />
         </a>
       </div>
       <div className="flex items-center gap-x-6 lg:gap-x-4">
-        <a
-          href="https://github.com/Jemeni11/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://github.com/Jemeni11/" target="_blank" rel="noopener noreferrer">
           <GitHubIcon />
         </a>
-        <a
-          href="https://www.linkedin.com/in/emmanuel-jemeni"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://www.linkedin.com/in/emmanuel-jemeni" target="_blank" rel="noopener noreferrer">
           <LinkedInIcon />
         </a>
-        <a
-          href="https://bsky.app/profile/jemeni11.bsky.social"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://bsky.app/profile/jemeni11.bsky.social" target="_blank" rel="noopener noreferrer">
           <BlueSkyIcon />
         </a>
-        <a
-          href="https://twitter.com/Jemeni11_"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://twitter.com/Jemeni11_" target="_blank" rel="noopener noreferrer">
           <TwitterIcon />
         </a>
-        <a
-          href="https://jemeni11.hashnode.dev/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://jemeni11.hashnode.dev/" target="_blank" rel="noopener noreferrer">
           <HashnodeIcon />
         </a>
-        <a
-          href="https://dev.to/jemeni11"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://dev.to/jemeni11" target="_blank" rel="noopener noreferrer">
           <DevdotToIcon />
         </a>
       </div>

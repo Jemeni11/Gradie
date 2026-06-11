@@ -7,18 +7,15 @@ const gradieModes: { name: GradieMode; description: string }[] = [
   },
   {
     name: "Surprise Me!",
-    description:
-      "Most prominent color + a random pick from the rest of the palette",
+    description: "Most prominent color + a random pick from the rest of the palette",
   },
   {
     name: "Bold Pop",
-    description:
-      "Most prominent color + the most visually contrasting color in the palette",
+    description: "Most prominent color + the most visually contrasting color in the palette",
   },
   {
     name: "Soft Sweep",
-    description:
-      "Most prominent color + the palette color with the most different hue",
+    description: "Most prominent color + the palette color with the most different hue",
   },
   {
     name: "Full Blend",
@@ -26,8 +23,7 @@ const gradieModes: { name: GradieMode; description: string }[] = [
   },
   {
     name: "Custom",
-    description:
-      "You choose any two colors from the extracted palette to create your own combo",
+    description: "You choose any two colors from the extracted palette to create your own combo",
   },
 ];
 

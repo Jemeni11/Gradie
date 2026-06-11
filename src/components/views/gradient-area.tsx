@@ -1,12 +1,8 @@
-import {
-  getRandomFromSlice,
-  getMostContrastingColor,
-  getMostDifferentHue,
-  copyToClipboard,
-} from "@/utils";
-import { colorInterpolationMethodMapper } from "@/constants";
-import type { GradieMode, GradientType } from "@/types";
+import { useEffect } from "react";
+
 import { useAtomValue, useSetAtom } from "jotai";
+
+import { colorInterpolationMethodMapper } from "@/constants";
 import {
   customPickStartAtom,
   customPickEndAtom,
@@ -19,17 +15,14 @@ import {
   colorFormatAtom,
   gradientStringAtom,
 } from "@/store";
-import GradientPreview from "./gradient-preview";
-import DownloadDialog from "./download-dialog";
-import { useEffect } from "react";
+import { getRandomFromSlice, getMostContrastingColor, getMostDifferentHue, copyToClipboard } from "@/utils";
 
-export default function GradientArea({
-  gradieMode,
-  gradientType,
-}: {
-  gradieMode: GradieMode;
-  gradientType: GradientType;
-}) {
+import DownloadDialog from "./download-dialog";
+import GradientPreview from "./gradient-preview";
+
+import type { GradieMode, GradientType } from "@/types";
+
+export default function GradientArea({ gradieMode, gradientType }: { gradieMode: GradieMode; gradientType: GradientType }) {
   const start = useAtomValue(customPickStartAtom);
   const end = useAtomValue(customPickEndAtom);
   const stop = useAtomValue(customPickStopAtom);
@@ -118,13 +111,10 @@ export default function GradientArea({
 
   return (
     <>
-      <GradientPreview
-        gradient={gradientString}
-        className="border-gradie-1 border border-solid"
-      />
+      <GradientPreview gradient={gradientString} className="border border-solid border-gradie-1" />
       <div className="flex w-full flex-col items-center gap-2 md:flex-row">
         <button
-          className="border-gradie-2 w-full flex-1 cursor-pointer rounded-lg border border-solid px-4 py-2 font-bold text-black"
+          className="w-full flex-1 cursor-pointer rounded-lg border border-solid border-gradie-2 px-4 py-2 font-bold text-black"
           onClick={copyGradientCSS}
           type="button"
         >

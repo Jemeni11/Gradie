@@ -89,13 +89,7 @@ const dimensionPresets: DimensionPresetObjectArray = [
     width: 1920,
     height: 1080,
     label: "Full HD (16:9)",
-    useCases: [
-      "YouTube Video",
-      "PowerPoint Slide",
-      "Keynote Slide",
-      "Hero Section",
-      "Desktop Wallpaper",
-    ],
+    useCases: ["YouTube Video", "PowerPoint Slide", "Keynote Slide", "Hero Section", "Desktop Wallpaper"],
     category: "presentation",
   },
 
