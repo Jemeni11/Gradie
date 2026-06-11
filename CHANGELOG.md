@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2026-06-11
 
+### Changed
+
+- Migrated linting and formatting toolchain from ESLint, Prettier, and Stylelint to oxlint and oxfmt for significantly faster performance.
+- Switched from `@vitejs/plugin-react` inline Babel config to `@rolldown/plugin-babel` with the react-compiler preset.
+- Simplified `pnpm-workspace.yaml` by replacing the extensive list of dependency overrides with a trust policy and `minimumReleaseAge`.
+- Upgraded core dependencies: React 19.2.7, TypeScript 6.0, Vite 8.0, Tailwind CSS 4.3, and various other packages.
+- Moved `paths` configuration from `tsconfig.json` into `tsconfig.app.json` and added a wildcard path mapping.
+- Reformatted `index.html` meta tags and icon links to single-line format for consistency.
+- Updated `lint-staged` config to use oxlint and oxfmt instead of the previous ESLint/Prettier/Stylelint pipeline.
+
+### Removed
+
+- Removed `.env.example`, `eslint.config.js`, `.prettierrc`, `.prettierignore`, and `.stylelintrc.json` as they are no longer needed.
+- Removed `@eslint/js`, `eslint-plugin-react-refresh`, `typescript-eslint`, `prettier`, `prettier-plugin-tailwindcss`, `stylelint` and related stylelint dependencies.
+
 ### Fixed
 
 - Resolved "Cannot call impure function during render" lint error by wrapping `Math.random` in a lazy `useState` initializer.
