@@ -1,17 +1,9 @@
 import { useEffect, useState } from "react";
-import { Toaster } from "@/components/ui/sonner";
-import {
-  Header,
-  Hero,
-  GradientPanel,
-  GradientPreview,
-  FAQ,
-  Footer,
-} from "@/components/views";
+
 import { ImagePreviewWithPalette } from "@/components/image";
-import Banner from "@/components/views/banner";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import defaultGradients from "@/constants/defaultGradient";
+import ImageUploadDropArea from "@/components/image/image-upload-drop-area";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogTrigger,
@@ -22,18 +14,23 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { Header, Hero, GradientPanel, GradientPreview, FAQ, Footer } from "@/components/views";
+import Banner from "@/components/views/banner";
+import defaultGradients from "@/constants/defaultGradient";
+import { useImageUpload } from "@/hooks/useImageUpload";
 import { InfoIcon } from "@/icons";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import ImageUploadDropArea from "@/components/image/image-upload-drop-area";
 import { initAnalytics } from "@/utils";
 
-export default function App() {
-  const [showBanner, setShowBanner] = useState(false);
+function getInitialBannerVisibility(): boolean {
+  const consent = localStorage.getItem("gradie-analytics-consent");
+  return consent === null;
+}
 
-  const [index, setIndex] = useState(
-    Math.floor(Math.random() * defaultGradients.length),
-  );
+export default function App() {
+  const [showBanner, setShowBanner] = useState(getInitialBannerVisibility);
+
+  const [index, setIndex] = useState(() => Math.floor(Math.random() * defaultGradients.length));
   const currentGradient = defaultGradients[index];
 
   const [opacity, setOpacity] = useState(1);
@@ -67,9 +64,6 @@ export default function App() {
     const analyticsConsent = localStorage.getItem("gradie-analytics-consent");
     if (analyticsConsent === "true") {
       initAnalytics();
-    } else if (analyticsConsent === null) {
-      // Show banner only if user hasn’t decided
-      setShowBanner(true);
     }
   }, []);
 
@@ -92,19 +86,13 @@ export default function App() {
   return (
     <>
       <Toaster richColors closeButton />
-      {showBanner && (
-        <Banner onEnable={handleEnableAnalytics} onDismiss={handleDismiss} />
-      )}
+      {showBanner && <Banner onEnable={handleEnableAnalytics} onDismiss={handleDismiss} />}
       <div className="mx-auto w-full max-w-7xl px-4 md:px-8 lg:h-screen">
         <Header />
         <Hero />
         {validFile ? (
           <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2 md:pt-8">
-            <ImagePreviewWithPalette
-              handleDeleteClick={handleDeleteClick}
-              successAnimation={successAnimation}
-              validFile={validFile}
-            />
+            <ImagePreviewWithPalette handleDeleteClick={handleDeleteClick} successAnimation={successAnimation} validFile={validFile} />
             <GradientPanel />
           </div>
         ) : (
@@ -112,11 +100,7 @@ export default function App() {
             <div className="my-8 inline-flex w-full justify-center">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="cursor-pointer font-medium"
-                    type="button"
-                  >
+                  <Button variant="outline" className="cursor-pointer font-medium" type="button">
                     Upload an image
                   </Button>
                 </DialogTrigger>
@@ -143,17 +127,11 @@ export default function App() {
                     <Alert className="border-gradie-2">
                       <InfoIcon className="size-4 animate-pulse motion-reduce:animate-none" />
                       <AlertTitle>Heads up!</AlertTitle>
-                      <AlertDescription>
-                        Images only. Only one image will be used.
-                      </AlertDescription>
+                      <AlertDescription>Images only. Only one image will be used.</AlertDescription>
                     </Alert>
                     <div className="flex flex-col gap-2">
                       {filesWithError?.map((file) => (
-                        <p
-                          key={file.key}
-                          className="text-sm text-red-700"
-                          role="alert"
-                        >
+                        <p key={file.key} className="text-sm text-red-700" role="alert">
                           {file.status.map((status) => status + "\n")}
                         </p>
                       ))}
@@ -161,11 +139,7 @@ export default function App() {
                   </div>
                   <DialogFooter className="mt-4 block md:hidden">
                     <DialogClose asChild>
-                      <Button
-                        variant="destructive"
-                        className="cursor-pointer"
-                        type="button"
-                      >
+                      <Button variant="destructive" className="cursor-pointer" type="button">
                         Close
                       </Button>
                     </DialogClose>
@@ -173,7 +147,7 @@ export default function App() {
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="border-gradie-1 rounded-lg border border-solid p-2">
+            <div className="rounded-lg border border-solid border-gradie-1 p-2">
               <GradientPreview
                 gradient={currentGradient}
                 className="inset-0 transition-opacity duration-1000"

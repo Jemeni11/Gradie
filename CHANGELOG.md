@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [//]: # "- **Fixed** for any bug fixes."
 [//]: # "- **Security** in case of vulnerabilities."
 
+## 2026-06-11
+
+### Fixed
+
+- Resolved "Cannot call impure function during render" lint error by wrapping `Math.random` in a lazy `useState` initializer.
+- Resolved "Calling setState synchronously within an effect" lint error by moving the analytics consent `localStorage` read into a lazy `useState` initializer, eliminating the synchronous `setShowBanner` call inside the effect.
+
 ## 2026-06-10
 
 ### Changed
