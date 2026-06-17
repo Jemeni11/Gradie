@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [//]: # "- **Fixed** for any bug fixes."
 [//]: # "- **Security** in case of vulnerabilities."
 
+## 2026-06-17
+
+### Changed
+
+- Optimized the color palette interface on mobile screens by switching the layout to a 5-column grid, rendering the color blocks as squares, and hiding the labels.
+
 ## 2026-06-11
 
 ### Changed

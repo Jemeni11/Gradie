@@ -7,8 +7,7 @@ import type { ColorThiefColor } from "@/hooks/useColorThief";
 export default function PaletteContainer({ palette }: { palette: ColorThiefColor[] }) {
   return (
     <>
-      <div className="flex w-full flex-col justify-between gap-y-4 rounded-lg sm:flex-row sm:flex-wrap sm:gap-x-2 lg:gap-x-4">
-        {/* <div className="flex w-full flex-col justify-between gap-y-4 rounded-lg md:flex-row md:flex-wrap md:gap-x-1 xl:gap-x-8"> */}
+      <div className="grid w-full grid-cols-5 gap-2 rounded-lg sm:flex sm:flex-row sm:flex-wrap sm:justify-between sm:gap-x-2 lg:gap-x-4">
         {palette?.map((paletteColor) => (
           <button
             type="button"
@@ -17,12 +16,10 @@ export default function PaletteContainer({ palette }: { palette: ColorThiefColor
             onClick={() => copyToClipboard(`${paletteColor}`, "Color copied!")}
           >
             <span
-              // className="shadow-gradie-2 h-20 w-[100%] rounded min-[900px]:size-14 md:size-10 md:rounded-xl lg:size-20"
-              className="h-20 w-[100%] rounded shadow-gradie-2 md:w-[100%] lg:rounded-xl"
+              className="aspect-square w-full rounded shadow-gradie-2 sm:aspect-auto sm:h-20 sm:w-full lg:rounded-xl"
               style={{ background: `${paletteColor}` }}
-              key={`${paletteColor}`}
             />
-            <small className="w-full py-2 text-center text-base text-pretty whitespace-normal text-black md:max-w-20 md:text-xs">
+            <small className="hidden w-full py-2 text-center text-pretty whitespace-normal text-black sm:block md:max-w-20 md:text-xs">
               {paletteColor}
             </small>
           </button>
